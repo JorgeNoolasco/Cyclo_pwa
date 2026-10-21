@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <!-- Símbolos próprios, reutilizados sem bibliotecas externas. -->
+  <symbol id="leaf" viewBox="0 0 24 24"><path d="M5 16C2 5 13 3 21 3c0 10-3 18-13 16M3 22 17 7"/></symbol>
+  <symbol id="grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+  <symbol id="activity" viewBox="0 0 24 24"><path d="M2 12h5l3-8 4 16 3-8h5"/></symbol>
+  <symbol id="bell" viewBox="0 0 24 24"><path d="M5 9a7 7 0 0 1 14 0v6l2 3H3l2-3Zm5 12h4"/></symbol>
+  <symbol id="box" viewBox="0 0 24 24"><path d="m3 7 9-5 9 5v10l-9 5-9-5Zm0 0 9 5 9-5M12 12v10M7 4.8l10 5.5"/></symbol>
+  <symbol id="layers" viewBox="0 0 24 24"><path d="m2 7 10-5 10 5-10 5ZM2 12l10 5 10-5M2 17l10 5 10-5"/></symbol>
+  <symbol id="recycle" viewBox="0 0 24 24"><path d="m8 7 4-5 5 8M17 4v6h-6M19 12l3 6H12m4 4-4-4 4-4M8 18H2l5-9M2 10l5-1 2 5"/></symbol>
+  <symbol id="arrow" viewBox="0 0 24 24"><path d="M5 19 19 5M5 5h14v14"/></symbol>
+  <symbol id="refresh" viewBox="0 0 24 24"><path d="M20 8a9 9 0 1 0 1 7M20 2v6h-6"/></symbol>
+  <symbol id="shield" viewBox="0 0 24 24"><path d="m12 2 9 4v6c0 6-9 10-9 10S3 18 3 12V6ZM8 12l3 3 5-6"/></symbol>
+  <symbol id="download" viewBox="0 0 24 24"><path d="M12 2v13m-5-5 5 5 5-5M3 16v5h18v-5"/></symbol>
+  <symbol id="logout" viewBox="0 0 24 24"><path d="M10 3H3v18h7M9 12h13m-5-5 5 5-5 5"/></symbol>
+  <symbol id="alert" viewBox="0 0 24 24"><path d="m12 2 10 19H2ZM12 9v5m0 3v1"/></symbol>
+</svg>

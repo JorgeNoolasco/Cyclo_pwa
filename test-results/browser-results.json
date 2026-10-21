@@ -1,0 +1,29 @@
+{
+  "results": [
+    "página protegida exige login",
+    "login inválido e limpeza da senha",
+    "login demonstrativo, dashboard e estoque sem rejeitos",
+    "esteira: emergência, parada, desligada, leitura antiga e desconectada",
+    "alertas ativos e todos",
+    "estoque e evolução diária",
+    "erros 500/403, resposta vazia e indisponibilidade da API",
+    "cache estático sem API e dashboard anterior offline",
+    "conexão restaurada atualiza dados automaticamente",
+    "estado offline sem dados anteriores",
+    "logout apaga dados, voltar não restaura sessão e interface abre offline",
+    "HTTP 401 encerra sessão e limpa tela",
+    "expiração temporal de uma hora",
+    "layout sem overflow em 320/390/768/1440 px",
+    "manifest/SW elegíveis segundo Chromium em perfil comum e instruções de instalação",
+    "nenhum erro JavaScript no fluxo demonstrativo",
+    "modo real usa Fetch/Bearer e renderiza conteúdo externo como texto, com CSP",
+    "atualização manual sem consultas simultâneas",
+    "polling suspenso em segundo plano e retomado ao voltar",
+    "resposta em andamento não repõe dados após logout",
+    "HTTP real interceptado: 500 preserva histórico, 403 remove dados, 401 encerra sessão"
+  ],
+  "installability": {
+    "installabilityErrors": []
+  },
+  "officialAPI": "Não disponível; integração validada com interceptação HTTP."
+}
