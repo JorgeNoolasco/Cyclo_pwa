@@ -1,0 +1,131 @@
+/* =========================================================
+   EcoCycle Mobile (PWA) - producao.css
+   Estilos exclusivos da tela "Produção e Estoque".
+   Carregar DEPOIS do style.css e do esteira.css
+   (ou colar no final do style.css).
+   ========================================================= */
+
+/* ---------- Barra com seletor de período ---------- */
+.barra-periodo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.periodo {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--eco-borda);
+  border-radius: 999px;
+  background: var(--eco-superficie);
+  color: var(--eco-azul);
+}
+.periodo .icon { width: 18px; height: 18px; }
+.periodo select {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--eco-texto);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 8px 4px;
+  cursor: pointer;
+}
+.periodo select:focus-visible {
+  outline: 3px solid var(--eco-info);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+/* ---------- Espaçamento entre título da seção e cards ---------- */
+.conteudo > section > .secao-titulo { margin-bottom: 10px; }
+
+/* ---------- Estoque de materiais ---------- */
+.estoque {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: var(--espaco);
+}
+.estoque-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.estoque-item__icone {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+}
+.estoque-item__icone--verde { background: var(--eco-sucesso-bg); color: var(--eco-verde-escuro); }
+.estoque-item__icone--cinza { background: #ECF0EF;              color: var(--eco-texto-suave); }
+
+.estoque-item__corpo { flex: 1; min-width: 0; }
+.estoque-item__linha {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.estoque-item__nome  { font-size: 0.85rem; font-weight: 600; }
+.estoque-item__valor { font-size: 0.95rem; font-weight: 700; }
+
+/* Barra de progresso */
+.progresso {
+  height: 10px;
+  border-radius: 999px;
+  background: #E7EDEB;
+  overflow: hidden;
+}
+.progresso__barra {
+  width: var(--p);
+  height: 100%;
+  border-radius: 999px;
+  background: var(--eco-verde);
+}
+.progresso__barra--cinza { background: var(--eco-info); }
+
+/* Estoque baixo: barra e valor em cor de aviso */
+.estoque-item--baixo .progresso__barra { background: var(--eco-aviso); }
+.estoque-item--baixo .estoque-item__valor { color: var(--eco-aviso); }
+
+/* ---------- Gráfico de linha (SVG) ---------- */
+.grafico__topo { align-items: center; }
+
+.linha {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.linha__grade line {
+  stroke: var(--eco-borda);
+  stroke-width: 1;
+}
+.linha__eixo-y text,
+.linha__eixo-x text {
+  fill: var(--eco-texto-suave);
+  font-size: 9px;
+}
+.linha__area  { fill: var(--eco-info); opacity: 0.12; }
+.linha__traco {
+  fill: none;
+  stroke: var(--eco-info);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.linha__pontos circle {
+  fill: var(--eco-superficie);
+  stroke: var(--eco-info);
+  stroke-width: 2;
+}

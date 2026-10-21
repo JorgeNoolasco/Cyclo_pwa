@@ -1,0 +1,131 @@
+/* =========================================================
+   EcoCycle Mobile (PWA) - menu.css
+   Estilos exclusivos da tela "Menu / Perfil".
+   Carregar DEPOIS do style.css e do esteira.css
+   (ou colar no final do style.css).
+   ========================================================= */
+
+/* ---------- Perfil ---------- */
+.perfil {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px var(--espaco);
+  border-radius: var(--raio);
+  background: var(--eco-azul);
+  color: #fff;
+  box-shadow: var(--sombra);
+}
+.perfil__avatar {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: var(--eco-verde);
+  color: #fff;
+}
+.perfil__avatar .icon { width: 32px; height: 32px; }
+.perfil__dados { min-width: 0; }
+.perfil__nome  { font-size: 1.2rem; font-weight: 700; line-height: 1.2; }
+.perfil__cargo { font-size: 0.85rem; opacity: 0.9; margin-top: 2px; }
+.perfil__email {
+  font-size: 0.75rem;
+  opacity: 0.75;
+  margin-top: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- Listas de itens ---------- */
+.menu-lista { overflow: hidden; }
+.menu-lista ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.menu-lista li + li { border-top: 1px solid var(--eco-borda); }
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 52px;                /* alvo de toque confortável */
+  padding: 0 var(--espaco);
+  border: 0;
+  background: transparent;
+  color: var(--eco-texto);
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+.menu-item:active { background: var(--eco-fundo); }
+.menu-item > .icon:first-child { color: var(--eco-azul); }
+.menu-item__texto { flex: 1; }
+.menu-item__seta { width: 20px; height: 20px; color: var(--eco-texto-suave); }
+
+/* Contador de alertas (versão estática do badge do menu) */
+.menu-badge {
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 11px;
+  background: var(--eco-perigo);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+
+/* Botão sair */
+.menu-item--sair,
+.menu-item--sair > .icon:first-child { color: var(--eco-perigo); }
+
+/* ---------- Rodapé com a marca ---------- */
+.rodape-marca {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 16px 0 8px;
+  text-align: center;
+}
+.rodape-marca .icon {
+  width: 40px; height: 40px;
+  color: var(--eco-verde);
+}
+.rodape-marca__nome   { font-size: 1.1rem; font-weight: 700; color: var(--eco-azul); }
+.rodape-marca__frase  { max-width: 240px; font-size: 0.8rem; color: var(--eco-texto-suave); }
+.rodape-marca__versao { font-size: 0.7rem; color: var(--eco-texto-suave); opacity: 0.8; }
+
+/* ---------- Diálogo "Sobre" ---------- */
+.dialogo {
+  width: min(90vw, 360px);
+  padding: 20px;
+  border: 0;
+  border-radius: var(--raio);
+  color: var(--eco-texto);
+  box-shadow: 0 10px 30px rgba(5, 56, 74, 0.3);
+}
+.dialogo::backdrop { background: rgba(5, 56, 74, 0.55); }
+.dialogo h2 { font-size: 1.1rem; color: var(--eco-azul); margin-bottom: 8px; }
+.dialogo p  { font-size: 0.9rem; color: var(--eco-texto-suave); }
+.dialogo__versao { margin-top: 10px; font-size: 0.75rem !important; }
+.dialogo__fechar {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 16px;
+  border: 0;
+  border-radius: var(--raio-sm);
+  background: var(--eco-azul);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.dialogo__fechar:active { background: var(--eco-azul-escuro); }

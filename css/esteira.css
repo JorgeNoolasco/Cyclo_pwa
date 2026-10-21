@@ -1,0 +1,131 @@
+/* =========================================================
+   EcoCycle Mobile (PWA) - esteira.css
+   Estilos exclusivos da tela "Esteira".
+   Carregar DEPOIS do style.css. Se preferir, cole este conteúdo
+   no final do style.css como "13. Tela Esteira".
+   ========================================================= */
+
+/* ---------- Header com botão voltar ---------- */
+.header-esq {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.btn-voltar {
+  display: grid;
+  place-items: center;
+  width: 44px; height: 44px;       /* alvo de toque mínimo */
+  margin-left: -10px;              /* alinha a seta com a margem da página */
+  border-radius: 50%;
+  color: #fff;
+}
+.btn-voltar:active { background: var(--eco-azul-escuro); }
+.header-titulo {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+/* ---------- Linha "Atualizado em" (alinhada à direita) ---------- */
+.atualizacao--direita { justify-content: flex-end; gap: 4px; }
+
+/* ---------- Card principal da esteira ---------- */
+.esteira-principal {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: var(--espaco);
+}
+.esteira-principal__icone {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--eco-azul);
+  color: #fff;
+}
+.esteira-principal__icone .icon { width: 28px; height: 28px; }
+.esteira-principal__nome {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--eco-azul);
+}
+.esteira-principal__estado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+.estado-texto { font-size: 1.05rem; font-weight: 700; }
+.estado-texto--ligada { color: var(--eco-sucesso); }
+.estado-texto--parada { color: var(--eco-aviso); }
+.estado-texto--falha  { color: var(--eco-perigo); }
+.estado-texto--sem-comunicacao { color: var(--eco-texto-suave); }
+
+/* ---------- Cards de métricas (velocidade, temperatura...) ---------- */
+.grid-metricas {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.metrica {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 12px;
+}
+.metrica__topo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--eco-azul);
+}
+.metrica__topo .icon { width: 22px; height: 22px; }
+.metrica__rotulo {
+  font-size: 0.75rem;
+  color: var(--eco-texto-suave);
+}
+.metrica__valor {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+.metrica__valor small { font-size: 0.9rem; font-weight: 600; margin-left: 2px; }
+
+/* Temperatura/velocidade fora do normal ganham cor de estado */
+.metrica--atencao .metrica__valor { color: var(--eco-aviso); }
+.metrica--critico .metrica__valor { color: var(--eco-perigo); }
+
+/* ---------- Lista de equipamentos ---------- */
+.secao-titulo {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--eco-azul);
+  margin-bottom: 8px;
+}
+.card-link__nome { font-size: 1rem; font-weight: 600; }
+
+/* ---------- Nota informativa ---------- */
+.nota {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px var(--espaco);
+  border-radius: var(--raio);
+  background: var(--eco-info-bg);
+  color: var(--eco-texto-suave);
+  font-size: 0.8rem;
+}
+.nota .icon { width: 20px; height: 20px; color: var(--eco-info); }
+
+/* ---------- Estado "sem comunicação" ----------
+   Adicione a classe .esteira--sem-comunicacao no <main> (via JS).
+   Os valores ficam apagados para não parecerem leitura atual. */
+.esteira--sem-comunicacao .metrica__valor {
+  color: var(--eco-texto-suave);
+  opacity: 0.55;
+}
+.esteira--sem-comunicacao .esteira-principal__icone {
+  background: var(--eco-texto-suave);
+}

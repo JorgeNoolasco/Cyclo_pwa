@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#084B60">
+
+  <title>EcoCycle - Produção e Estoque</title>
+
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/esteira.css">
+  <link rel="stylesheet" href="css/producao.css">
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- ================= HEADER (voltar + período) ================= -->
+  <header class="app-header">
+    <div class="app-header__inner">
+      <div class="header-esq">
+        <a href="dashboard.html" class="btn-voltar" aria-label="Voltar para o Início">
+          <i class="icon" data-lucide="arrow-left" aria-hidden="true"></i>
+        </a>
+        <h1 class="header-titulo">Produção e Estoque</h1>
+      </div>
+    </div>
+  </header>
+
+  <main class="app">
+    <!-- Aviso de conexão: o JS adiciona a classe .is-visivel quando necessário -->
+    <div class="aviso-conexao aviso-conexao--offline" id="avisoOffline" role="status">
+      Sem conexão. Exibindo os últimos dados salvos.
+    </div>
+    <div class="aviso-conexao aviso-conexao--antigo" id="avisoAntigo" role="status">
+      Os dados podem estar desatualizados.
+    </div>
+
+    <div class="conteudo">
+
+      <!-- Seletor de período + última atualização -->
+      <div class="barra-periodo">
+        <label class="periodo">
+          <i class="icon" data-lucide="calendar" aria-hidden="true"></i>
+          <span class="sr-only">Período</span>
+          <select id="selectPeriodo">
+            <option value="hoje" selected>Hoje</option>
+            <option value="7d">Últimos 7 dias</option>
+            <option value="mes">Este mês</option>
+          </select>
+        </label>
+
+        <div class="atualizacao">
+          <span>Atualizado: <time id="ultimaAtualizacao" datetime="2025-04-10T14:32">10/04/2025 14:32</time></span>
+          <button class="btn-atualizar" id="btnAtualizar" type="button" aria-label="Atualizar dados">
+            <i class="icon" data-lucide="refresh-cw" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- ============ PRODUÇÃO ============ -->
+      <section aria-label="Produção">
+        <h2 class="secao-titulo">Produção</h2>
+
+        <div class="grid-kpi">
+          <article class="card kpi kpi--azul">
+            <div class="kpi__topo">
+              <div class="kpi__icone"><i class="icon" data-lucide="scale" aria-hidden="true"></i></div>
+              <span class="kpi__rotulo">Produção diária</span>
+            </div>
+            <p class="kpi__valor"><span data-campo="producaoDiaria">28,4</span><small>t</small></p>
+            <span class="kpi__variacao kpi__variacao--sobe">
+              <i class="icon" style="width:14px;height:14px" data-lucide="arrow-up" aria-hidden="true"></i> 12%
+            </span>
+          </article>
+
+          <article class="card kpi kpi--verde">
+            <div class="kpi__topo">
+              <div class="kpi__icone"><i class="icon" data-lucide="calendar-days" aria-hidden="true"></i></div>
+              <span class="kpi__rotulo">Produção mensal</span>
+            </div>
+            <p class="kpi__valor"><span data-campo="producaoMensal">112</span><small>t</small></p>
+            <span class="kpi__variacao kpi__variacao--sobe">
+              <i class="icon" style="width:14px;height:14px" data-lucide="arrow-up" aria-hidden="true"></i> 8%
+            </span>
+          </article>
+
+          <article class="card kpi kpi--verde">
+            <div class="kpi__topo">
+              <div class="kpi__icone"><i class="icon" data-lucide="recycle" aria-hidden="true"></i></div>
+              <span class="kpi__rotulo">Plástico</span>
+            </div>
+            <p class="kpi__valor"><span data-campo="plastico">18,2</span><small>t</small></p>
+            <span class="kpi__variacao kpi__variacao--sobe">
+              <i class="icon" style="width:14px;height:14px" data-lucide="arrow-up" aria-hidden="true"></i> 15%
+            </span>
+          </article>
+
+          <article class="card kpi kpi--cinza">
+            <div class="kpi__topo">
+              <div class="kpi__icone"><i class="icon" data-lucide="settings" aria-hidden="true"></i></div>
+              <span class="kpi__rotulo">Metal</span>
+            </div>
+            <p class="kpi__valor"><span data-campo="metal">6,7</span><small>t</small></p>
+            <span class="kpi__variacao kpi__variacao--sobe">
+              <i class="icon" style="width:14px;height:14px" data-lucide="arrow-up" aria-hidden="true"></i> 8%
+            </span>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ ESTOQUE ============ -->
+      <section aria-label="Estoque de materiais">
+        <h2 class="secao-titulo">Estoque de materiais</h2>
+
+        <div class="card estoque">
+
+          <!-- --p = % ocupado do espaço de estoque. Se estiver baixo, use a classe estoque-item--baixo -->
+          <div class="estoque-item">
+            <div class="estoque-item__icone estoque-item__icone--verde">
+              <i class="icon" data-lucide="recycle" aria-hidden="true"></i>
+            </div>
+            <div class="estoque-item__corpo">
+              <div class="estoque-item__linha">
+                <span class="estoque-item__nome">Plástico</span>
+                <span class="estoque-item__valor"><span data-campo="estoquePlastico">12,5</span> t</span>
+              </div>
+              <div class="progresso" role="progressbar" aria-label="Estoque de plástico"
+                   aria-valuemin="0" aria-valuemax="100" aria-valuenow="62">
+                <div class="progresso__barra" style="--p: 62%"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="estoque-item">
+            <div class="estoque-item__icone estoque-item__icone--cinza">
+              <i class="icon" data-lucide="settings" aria-hidden="true"></i>
+            </div>
+            <div class="estoque-item__corpo">
+              <div class="estoque-item__linha">
+                <span class="estoque-item__nome">Metal</span>
+                <span class="estoque-item__valor"><span data-campo="estoqueMetal">5,8</span> t</span>
+              </div>
+              <div class="progresso" role="progressbar" aria-label="Estoque de metal"
+                   aria-valuemin="0" aria-valuemax="100" aria-valuenow="29">
+                <div class="progresso__barra progresso__barra--cinza" style="--p: 29%"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ============ GRÁFICO: ÚLTIMOS 7 DIAS ============ -->
+      <section class="card grafico" aria-label="Produção dos últimos 7 dias">
+        <div class="grafico__topo">
+          <h2 class="grafico__titulo">Produção dos últimos 7 dias</h2>
+          <span class="grafico__total">t</span>
+        </div>
+
+        <!-- Gráfico em SVG. Fórmula do ponto: x = 30 + 46,67 * índice | y = 110 - valor * 2,5 (escala 0 a 40 t) -->
+        <svg class="linha" viewBox="0 0 330 140" role="img"
+             aria-label="Produção diária de 3 a 9 de abril, de 19 a 32 toneladas">
+
+          <!-- grade e eixo Y -->
+          <g class="linha__grade">
+            <line x1="30" y1="110" x2="320" y2="110"/>
+            <line x1="30" y1="85"  x2="320" y2="85"/>
+            <line x1="30" y1="60"  x2="320" y2="60"/>
+            <line x1="30" y1="35"  x2="320" y2="35"/>
+            <line x1="30" y1="10"  x2="320" y2="10"/>
+          </g>
+          <g class="linha__eixo-y">
+            <text x="22" y="113" text-anchor="end">0</text>
+            <text x="22" y="88"  text-anchor="end">10</text>
+            <text x="22" y="63"  text-anchor="end">20</text>
+            <text x="22" y="38"  text-anchor="end">30</text>
+            <text x="22" y="13"  text-anchor="end">40</text>
+          </g>
+
+          <!-- área e linha -->
+          <polygon class="linha__area"
+                   points="30,110 30,60 76.7,62.5 123.3,52.5 170,60 216.7,42.5 263.3,55 310,30 310,110"/>
+          <polyline class="linha__traco"
+                    points="30,60 76.7,62.5 123.3,52.5 170,60 216.7,42.5 263.3,55 310,30"/>
+
+          <!-- pontos -->
+          <g class="linha__pontos">
+            <circle cx="30"    cy="60"   r="3.5"/>
+            <circle cx="76.7"  cy="62.5" r="3.5"/>
+            <circle cx="123.3" cy="52.5" r="3.5"/>
+            <circle cx="170"   cy="60"   r="3.5"/>
+            <circle cx="216.7" cy="42.5" r="3.5"/>
+            <circle cx="263.3" cy="55"   r="3.5"/>
+            <circle cx="310"   cy="30"   r="3.5"/>
+          </g>
+
+          <!-- eixo X -->
+          <g class="linha__eixo-x">
+            <text x="30"    y="130" text-anchor="middle">3/04</text>
+            <text x="76.7"  y="130" text-anchor="middle">4/04</text>
+            <text x="123.3" y="130" text-anchor="middle">5/04</text>
+            <text x="170"   y="130" text-anchor="middle">6/04</text>
+            <text x="216.7" y="130" text-anchor="middle">7/04</text>
+            <text x="263.3" y="130" text-anchor="middle">8/04</text>
+            <text x="310"   y="130" text-anchor="middle">9/04</text>
+          </g>
+        </svg>
+      </section>
+
+      <!-- Nota informativa -->
+      <p class="nota">
+        <i class="icon" data-lucide="info" aria-hidden="true"></i>
+        <span>Somente consulta. Para movimentar o estoque, use o sistema de gestão (ERP).</span>
+      </p>
+
+    </div>
+  </main>
+
+  <!-- ================= NAVEGAÇÃO INFERIOR ================= -->
+  <nav class="nav-inferior" aria-label="Navegação principal">
+    <ul class="nav-inferior__lista">
+      <li>
+        <a href="dashboard.html" class="nav-item">
+          <i class="icon" data-lucide="house" aria-hidden="true"></i>
+          <span>Início</span>
+        </a>
+      </li>
+      <li>
+        <a href="esteira.html" class="nav-item">
+          <i class="icon" data-lucide="factory" aria-hidden="true"></i>
+          <span>Esteira</span>
+        </a>
+      </li>
+      <li>
+        <a href="alertas.html" class="nav-item">
+          <i class="icon" data-lucide="bell" aria-hidden="true"></i>
+          <span>Alertas</span>
+          <span class="badge-contador">3</span>
+        </a>
+      </li>
+      <li>
+        <a href="producao.html" class="nav-item is-ativo" aria-current="page">
+          <i class="icon" data-lucide="chart-no-axes-column" aria-hidden="true"></i>
+          <span>Produção</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <script>
+    lucide.createIcons();
+
+    // Troca de período: aqui você vai chamar a API com o período escolhido
+    document.getElementById('selectPeriodo').addEventListener('change', (e) => {
+      console.log('Período selecionado:', e.target.value);
+      // TODO: buscar dados da API e atualizar os cards, o estoque e o gráfico
+    });
+  </script>
+</body>
+</html>

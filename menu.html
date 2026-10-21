@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#084B60">
+
+  <title>EcoCycle - Menu</title>
+
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/esteira.css">
+  <link rel="stylesheet" href="css/menu.css">
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- ================= HEADER (voltar) ================= -->
+  <header class="app-header">
+    <div class="app-header__inner">
+      <div class="header-esq">
+        <a href="dashboard.html" class="btn-voltar" aria-label="Voltar para o Início">
+          <i class="icon" data-lucide="arrow-left" aria-hidden="true"></i>
+        </a>
+        <h1 class="header-titulo">Menu</h1>
+      </div>
+    </div>
+  </header>
+
+  <main class="app">
+    <!-- Aviso de conexão: o JS adiciona a classe .is-visivel quando necessário -->
+    <div class="aviso-conexao aviso-conexao--offline" id="avisoOffline" role="status">
+      Sem conexão. Exibindo os últimos dados salvos.
+    </div>
+
+    <div class="conteudo">
+
+      <!-- ============ PERFIL ============ -->
+      <section class="perfil" aria-label="Perfil do usuário">
+        <div class="perfil__avatar" aria-hidden="true">
+          <i class="icon" data-lucide="user-round"></i>
+        </div>
+        <div class="perfil__dados">
+          <h2 class="perfil__nome" id="nomeCompleto">Ana Silva</h2>
+          <p class="perfil__cargo" id="cargoUsuario">Gerente</p>
+          <p class="perfil__email" id="emailUsuario">ana.silva@ecocycle.com</p>
+        </div>
+      </section>
+
+      <!-- ============ ATALHOS ============ -->
+      <nav class="card menu-lista" aria-label="Atalhos">
+        <ul>
+          <li>
+            <a href="dashboard.html" class="menu-item">
+              <i class="icon" data-lucide="house" aria-hidden="true"></i>
+              <span class="menu-item__texto">Início</span>
+              <i class="icon menu-item__seta" data-lucide="chevron-right" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li>
+            <a href="esteira.html" class="menu-item">
+              <i class="icon" data-lucide="factory" aria-hidden="true"></i>
+              <span class="menu-item__texto">Esteira</span>
+              <i class="icon menu-item__seta" data-lucide="chevron-right" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li>
+            <a href="alertas.html" class="menu-item">
+              <i class="icon" data-lucide="bell" aria-hidden="true"></i>
+              <span class="menu-item__texto">Alertas</span>
+              <span class="menu-badge" aria-label="3 alertas ativos">3</span>
+              <i class="icon menu-item__seta" data-lucide="chevron-right" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li>
+            <a href="producao.html" class="menu-item">
+              <i class="icon" data-lucide="chart-no-axes-column" aria-hidden="true"></i>
+              <span class="menu-item__texto">Produção e Estoque</span>
+              <i class="icon menu-item__seta" data-lucide="chevron-right" aria-hidden="true"></i>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- ============ APLICATIVO ============ -->
+      <section class="card menu-lista" aria-label="Aplicativo">
+        <ul>
+          <!-- Aparece só quando o navegador permitir instalar a PWA (ver JS) -->
+          <li id="itemInstalar" hidden>
+            <button type="button" class="menu-item" id="btnInstalar">
+              <i class="icon" data-lucide="download" aria-hidden="true"></i>
+              <span class="menu-item__texto">Instalar aplicativo</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="menu-item" id="btnSobre">
+              <i class="icon" data-lucide="info" aria-hidden="true"></i>
+              <span class="menu-item__texto">Sobre o EcoCycle</span>
+              <i class="icon menu-item__seta" data-lucide="chevron-right" aria-hidden="true"></i>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="menu-item menu-item--sair" id="btnSair">
+              <i class="icon" data-lucide="log-out" aria-hidden="true"></i>
+              <span class="menu-item__texto">Sair</span>
+            </button>
+          </li>
+        </ul>
+      </section>
+
+      <!-- ============ MARCA ============ -->
+      <footer class="rodape-marca">
+        <i class="icon" data-lucide="leaf" aria-hidden="true"></i>
+        <p class="rodape-marca__nome">EcoCycle</p>
+        <p class="rodape-marca__frase">Tecnologia e sustentabilidade caminhando juntas.</p>
+        <p class="rodape-marca__versao">Versão 1.0.0</p>
+      </footer>
+
+    </div>
+  </main>
+
+  <!-- ============ DIÁLOGO "SOBRE" ============ -->
+  <dialog class="dialogo" id="dialogoSobre" aria-labelledby="tituloSobre">
+    <h2 id="tituloSobre">Sobre o EcoCycle</h2>
+    <p>
+      Aplicativo de monitoramento remoto da operação da EcoCycle.
+      Aqui você consulta produção, status da esteira, alertas e estoque.
+      Os dados são somente para consulta e vêm da API na nuvem.
+    </p>
+    <p class="dialogo__versao">Versão 1.0.0</p>
+    <button type="button" class="dialogo__fechar" id="btnFecharSobre">Fechar</button>
+  </dialog>
+
+  <!-- ================= NAVEGAÇÃO INFERIOR ================= -->
+  <nav class="nav-inferior" aria-label="Navegação principal">
+    <ul class="nav-inferior__lista">
+      <li>
+        <a href="dashboard.html" class="nav-item">
+          <i class="icon" data-lucide="house" aria-hidden="true"></i>
+          <span>Início</span>
+        </a>
+      </li>
+      <li>
+        <a href="esteira.html" class="nav-item">
+          <i class="icon" data-lucide="factory" aria-hidden="true"></i>
+          <span>Esteira</span>
+        </a>
+      </li>
+      <li>
+        <a href="alertas.html" class="nav-item">
+          <i class="icon" data-lucide="bell" aria-hidden="true"></i>
+          <span>Alertas</span>
+          <span class="badge-contador">3</span>
+        </a>
+      </li>
+      <li>
+        <a href="producao.html" class="nav-item">
+          <i class="icon" data-lucide="chart-no-axes-column" aria-hidden="true"></i>
+          <span>Produção</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <script>
+    lucide.createIcons();
+
+    // ---------- Sobre ----------
+    const dialogo = document.getElementById('dialogoSobre');
+    document.getElementById('btnSobre').addEventListener('click', () => dialogo.showModal());
+    document.getElementById('btnFecharSobre').addEventListener('click', () => dialogo.close());
+    // Fecha ao clicar fora da caixa
+    dialogo.addEventListener('click', (e) => { if (e.target === dialogo) dialogo.close(); });
+
+    // ---------- Sair ----------
+    document.getElementById('btnSair').addEventListener('click', () => {
+      // TODO: chamar o logout da API (invalidar o token) e limpar a sessão
+      try { sessionStorage.clear(); } catch (e) {}
+      window.location.href = 'index.html'; // tela de login
+    });
+
+    // ---------- Instalar PWA ----------
+    let promptInstalacao = null;
+    const itemInstalar = document.getElementById('itemInstalar');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      promptInstalacao = e;
+      itemInstalar.hidden = false;
+    });
+
+    document.getElementById('btnInstalar').addEventListener('click', async () => {
+      if (!promptInstalacao) return;
+      promptInstalacao.prompt();
+      await promptInstalacao.userChoice;
+      promptInstalacao = null;
+      itemInstalar.hidden = true;
+    });
+  </script>
+</body>
+</html>

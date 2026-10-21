@@ -1,0 +1,122 @@
+/* =========================================================
+   EcoCycle Mobile (PWA) - alertas.css
+   Estilos exclusivos da tela "Alertas".
+   Carregar DEPOIS do style.css (ou colar no final dele).
+   ========================================================= */
+
+/* ---------- Botão do header (funil) ----------
+   Reaproveita .btn-sino; só zera o estilo padrão de <button> */
+button.btn-sino {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+button.btn-sino[aria-expanded="true"] { background: var(--eco-azul-escuro); }
+
+/* ---------- Chips de filtro ---------- */
+.filtros {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;                /* rola na horizontal em telas estreitas */
+  padding-bottom: 2px;
+  scrollbar-width: none;
+}
+.filtros::-webkit-scrollbar { display: none; }
+.filtros[hidden] { display: none; }
+
+.chip {
+  flex-shrink: 0;
+  min-height: 36px;
+  padding: 6px 14px;
+  border: 1px solid var(--eco-borda);
+  border-radius: 999px;
+  background: var(--eco-superficie);
+  color: var(--eco-texto-suave);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.chip.is-ativo {
+  background: var(--eco-azul);
+  border-color: var(--eco-azul);
+  color: #fff;
+}
+
+/* ---------- Lista ---------- */
+.lista-alertas {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.lista-alertas .alerta[hidden] { display: none; }
+
+/* ---------- Card de alerta ---------- */
+
+.alerta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-left: 4px solid var(--cor);
+}
+
+
+.alerta:active { background: var(--eco-fundo); }
+
+.alerta__icone {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--cor-bg);
+  color: var(--cor);
+}
+.alerta__corpo { flex: 1; min-width: 0; }
+.alerta__titulo {
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.alerta__meta {
+  margin-top: 2px;
+  font-size: 0.75rem;
+  color: var(--eco-texto-suave);
+}
+.alerta__badges {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* Cores por gravidade */
+.alerta--alta  { --cor: var(--eco-perigo); --cor-bg: var(--eco-perigo-bg); }
+.alerta--media { --cor: var(--eco-aviso);  --cor-bg: var(--eco-aviso-bg); }
+.alerta--baixa { --cor: var(--eco-info);   --cor-bg: var(--eco-info-bg); }
+
+/* Alertas resolvidos ficam com menos destaque */
+.alerta[data-situacao="resolvido"] .alerta__titulo { color: var(--eco-texto-suave); }
+
+/* ---------- Badges de gravidade e situação ---------- */
+.badge--alta     { background: var(--eco-perigo-bg);  color: var(--eco-perigo); }
+.badge--media    { background: var(--eco-aviso-bg);   color: var(--eco-aviso); }
+.badge--baixa    { background: var(--eco-info-bg);    color: var(--eco-info); }
+.badge--ativo    { background: var(--eco-texto);      color: #fff; }
+.badge--resolvido{ background: var(--eco-sucesso-bg); color: var(--eco-sucesso); }
+
+/* ---------- Estado vazio ---------- */
+.vazio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 32px 16px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--eco-texto-suave);
+}
+.vazio[hidden] { display: none; }
+.vazio .icon { width: 32px; height: 32px; color: var(--eco-sucesso); }

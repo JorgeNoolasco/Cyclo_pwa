@@ -1,165 +1,164 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#166534">
-  <meta name="description" content="EcoCycle: monitoramento de reciclagem, produção e alertas. Equipe 06.">
-  <title>EcoCycle | Monitoramento inteligente</title>
+  <meta name="theme-color" content="#084B60">
+
+  <title>EcoCycle - Esteira</title>
+
   <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
-  <link rel="manifest" href="manifest.json">
+
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/components.css">
-  <link rel="stylesheet" href="css/mobile.css">
-  <script type="module" src="js/app.js"></script>
+  <link rel="stylesheet" href="css/esteira.css">
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
 </head>
-
 <body>
-  <!-- As páginas compartilham a estrutura. O JavaScript atualiza a área principal sem persistir o token. -->
-  <a class="skip-link" href="#main-content">Pular para o conteúdo</a>
-  <noscript>
-    <p class="banner warning">Ative o JavaScript para entrar e consultar os dados da EcoCycle.</p>
-  </noscript>
-  <section id="login-view" class="login-layout" hidden>
-    <div class="login-story">
-      <a href="login.html" class="brand" data-route="login"><span class="brand-icon"><svg class="icon"
-            aria-hidden="true">
-            <use href="assets/icons/symbols.svg#leaf" />
-          </svg></span>EcoCycle<span class="brand-dot">.</span></a>
-      <div class="story-content">
-        <span class="story-kicker">RECICLAGEM INTELIGENTE</span>
-        <h1>Transformando<br>resíduos em<br><em>novas possibilidades.</em></h1>
-        <p>Acompanhe cada etapa da transformação.<br>Informação conectada a um futuro mais sustentável.</p>
-        <div class="orbit-art" aria-hidden="true">
-          <div class="orbit orbit-one"></div>
-          <div class="orbit orbit-two"></div><svg class="icon">
-            <use href="assets/icons/symbols.svg#recycle" />
-          </svg><span class="orbit-label label-one">CONECTAR</span><span
-            class="orbit-label label-two">TRANSFORMAR</span><span class="orbit-label label-three">REGENERAR</span>
-        </div>
-      </div>
-      <div class="story-footer">PROJETO INTEGRADOR <span>EQUIPE 06</span></div>
-    </div>
-    <div class="login-form-side">
-      <div class="login-card">
-        <span class="eyebrow">SEU CENTRO DE MONITORAMENTO</span>
-        <h2>Bem-vindo à EcoCycle</h2>
-        <p class="muted">Entre para acompanhar a operação, de onde estiver.</p>
-        <p id="session-message" class="banner warning" role="status" hidden></p>
-        <div class="demo-login" data-demo hidden><strong>Ambiente de demonstração</strong>
-          <p>Dados fictícios. Usuário <b>demo</b> · senha <b>ecocycle-demo</b></p><button id="fill-demo"
-            type="button">Preencher acesso demonstrativo <span aria-hidden="true">→</span></button>
-        </div>
-        <form id="login-form">
-          <label for="login-user">Usuário</label>
-          <input id="login-user" name="login" autocomplete="username" required maxlength="100"
-            placeholder="Seu usuário">
-          <label for="login-password">Senha</label>
-          <div class="password-wrap"><input id="login-password" name="senha" type="password"
-              autocomplete="current-password" required maxlength="256" placeholder="Sua senha"><button type="button"
-              id="show-password" aria-controls="login-password">Mostrar</button></div>
-          <p id="login-error" class="login-error" role="alert"></p>
-          <button type="submit" id="login-submit" class="primary login-submit">Acessar monitoramento</button>
-        </form>
-        <p class="login-security"><svg class="icon" aria-hidden="true">
-            <use href="assets/icons/symbols.svg#shield" />
-          </svg>Acesso de consulta. Sessão temporária neste dispositivo.</p>
-        <button type="button" class="install-button" data-install><svg class="icon" aria-hidden="true">
-            <use href="assets/icons/symbols.svg#download" />
-          </svg>Instalar aplicativo</button>
-      </div>
-      <footer>EcoCycle · Tecnologia a favor do amanhã</footer>
-    </div>
-  </section>
-  <div id="workspace" class="app-layout" hidden>
-    <aside class="sidebar">
-      <a href="dashboard.html" class="brand" data-route="dashboard"><span class="brand-icon"><svg class="icon"
-            aria-hidden="true">
-            <use href="assets/icons/symbols.svg#leaf" />
-          </svg></span>EcoCycle<span class="brand-dot">.</span></a>
-      <span class="sidebar-caption">ESPAÇO DE MONITORAMENTO</span>
-      <nav aria-label="Navegação principal">
-        <a href="dashboard.html" data-route="dashboard"><svg class="icon" aria-hidden="true">
-            <use href="assets/icons/symbols.svg#grid" />
-          </svg><span>Visão geral</span></a>
-        <a href="esteira.html" data-route="esteira"><svg class="icon" aria-hidden="true">
-            <use href="assets/icons/symbols.svg#activity" />
-          </svg><span>Esteira</span></a>
-        <a href="alertas.html" data-route="alertas"><svg class="icon" aria-hidden="true">
-            <use href="assets/icons/symbols.svg#bell" />
-          </svg><span>Alertas</span></a>
-        <a href="estoque.html" data-route="estoque"><svg class="icon" aria-hidden="true">
-            <use href="assets/icons/symbols.svg#box" />
-          </svg><span>Estoque</span></a>
-      </nav>
-      <div class="sidebar-bottom">
-        <div class="read-only"><svg class="icon" aria-hidden="true">
-            <use href="assets/icons/symbols.svg#shield" />
-          </svg>
-          <div><strong>Acesso de consulta</strong><span>Conectado para acompanhar.</span></div>
-        </div>
-        <button class="install-button" type="button" data-install><svg class="icon" aria-hidden="true">
-            <use href="assets/icons/symbols.svg#download" />
-          </svg>Instalar aplicativo</button>
-        <div class="user-profile"><span class="avatar" aria-hidden="true">EC</span>
-          <div><strong id="user-name"></strong><span id="user-role"></span></div>
-        </div>
-      </div>
-    </aside>
-    <div class="main-area">
-      <header class="topbar">
-        <div class="breadcrumb">EcoCycle <span>/</span> <strong id="breadcrumb">Visão geral</strong></div>
-        <div class="topbar-actions"><span id="connection" class="connection" role="status">Aguardando
-            dados</span><button class="icon-button mobile-install" data-install type="button"
-            aria-label="Instalar aplicativo" title="Instalar aplicativo"><svg class="icon" aria-hidden="true">
-              <use href="assets/icons/symbols.svg#download" />
-            </svg></button><button id="logout" class="icon-button" type="button" aria-label="Sair da conta"
-            title="Sair da conta"><svg class="icon" aria-hidden="true">
-              <use href="assets/icons/symbols.svg#logout" />
-            </svg></button></div>
-      </header>
-      <main id="main-content" class="main-content">
-        <div class="page-heading">
-          <div><span class="eyebrow">OPERAÇÃO EM PERSPECTIVA</span>
-            <h1 id="page-title" tabindex="-1">Visão geral</h1>
-            <p id="page-subtitle"></p>
-          </div><button id="refresh" type="button" class="refresh-button"><svg class="icon" aria-hidden="true">
-              <use href="assets/icons/symbols.svg#refresh" />
-            </svg><span id="refresh-label">Atualizar</span></button>
-        </div>
-        <div class="demo-bar" data-demo hidden><span><i></i>DEMONSTRAÇÃO <span class="demo-extra">· Dados fictícios da
-              Equipe 06</span></span><label for="scenario">Cenário <select id="scenario">
-              <option value="normal">Operação normal</option>
-              <option value="stale">Leitura desatualizada</option>
-              <option value="emergency">Emergência</option>
-              <option value="stopped">Parada</option>
-              <option value="off">Desligada</option>
-              <option value="disconnected">Sem comunicação</option>
-              <option value="empty">Sem dados</option>
-              <option value="500">Erro 500</option>
-              <option value="403">Sem permissão (403)</option>
-              <option value="401">Sessão expirada (401)</option>
-              <option value="offline">Falha de conexão</option>
-            </select></label></div>
-        <div id="messages" role="status" aria-live="polite"></div>
-        <div class="update-line"><span id="last-updated" class="muted"></span><span class="muted">Atualização automática
-            · 5 s</span></div>
-        <div id="content"></div>
-        <footer class="app-footer"><span>EcoCycle · Reciclagem inteligente</span><span>Equipe 06 — Nuvem, Integração e
-            Mobile</span></footer>
-      </main>
-    </div>
-  </div>
-  <p id="pwa-status" class="pwa-status" role="status"></p>
-  <dialog id="install-dialog" aria-labelledby="install-title">
-    <h2 id="install-title">Leve a EcoCycle com você</h2>
-    <p>No Chrome ou Edge, abra o menu e procure “Instalar aplicativo”. No Safari do iPhone, use Compartilhar → Adicionar
-      à Tela de Início.</p>
-    <p>A opção depende do navegador e de acesso por HTTPS. Primeiro abra a aplicação com conexão para preparar os
-      arquivos offline.</p><button id="close-install" class="primary" type="button">Entendi</button>
-  </dialog>
-</body>
 
+  <!-- ================= HEADER (com botão voltar) ================= -->
+  <header class="app-header">
+    <div class="app-header__inner">
+      <div class="header-esq">
+        <a href="dashboard.html" class="btn-voltar" aria-label="Voltar para o Início">
+          <i class="icon" data-lucide="arrow-left" aria-hidden="true"></i>
+        </a>
+        <h1 class="header-titulo">Esteira</h1>
+      </div>
+    </div>
+  </header>
+
+  <!-- A classe .esteira--sem-comunicacao pode ser adicionada aqui pelo JS -->
+  <main class="app" id="telaEsteira">
+    <!-- Aviso de conexão: o JS adiciona a classe .is-visivel quando necessário -->
+    <div class="aviso-conexao aviso-conexao--offline" id="avisoOffline" role="status">
+      Sem conexão. Exibindo os últimos dados salvos.
+    </div>
+    <div class="aviso-conexao aviso-conexao--antigo" id="avisoAntigo" role="status">
+      Os dados podem estar desatualizados.
+    </div>
+
+    <div class="conteudo">
+
+      <!-- Última atualização -->
+      <div class="atualizacao atualizacao--direita">
+        <span>Atualizado em: <time id="ultimaAtualizacao" datetime="2025-04-10T14:32">10/04/2025 14:32</time></span>
+        <button class="btn-atualizar" id="btnAtualizar" type="button" aria-label="Atualizar dados">
+          <i class="icon" data-lucide="refresh-cw" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <!-- Card principal: estado da esteira -->
+      <section class="card esteira-principal" aria-label="Estado da esteira">
+        <div class="esteira-principal__icone">
+          <i class="icon" data-lucide="factory" aria-hidden="true"></i>
+        </div>
+        <div>
+          <h2 class="esteira-principal__nome" id="nomeEsteira">Esteira 01</h2>
+          <div class="esteira-principal__estado">
+            <!-- Troque as classes conforme o estado vindo da API:
+                 ponto--ligada | ponto--parada | ponto--falha | ponto--sem-comunicacao
+                 estado-texto--ligada | --parada | --falha | --sem-comunicacao
+                 badge--normal | badge--atencao | badge--critico | badge--sem-comunicacao -->
+            <span class="ponto ponto--ligada" id="pontoEsteira"></span>
+            <span class="estado-texto estado-texto--ligada" id="textoEsteira">Ligada</span>
+            <span class="badge badge--normal" id="badgeEsteira">Normal</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Métricas -->
+      <section class="grid-metricas" aria-label="Medições da esteira">
+
+        <article class="card metrica">
+          <div class="metrica__topo">
+            <i class="icon" data-lucide="gauge" aria-hidden="true"></i>
+            <span class="metrica__rotulo">Velocidade</span>
+          </div>
+          <p class="metrica__valor"><span data-campo="velocidade">85</span><small>%</small></p>
+        </article>
+
+        <!-- Para temperatura alta, adicione .metrica--atencao ou .metrica--critico -->
+        <article class="card metrica">
+          <div class="metrica__topo">
+            <i class="icon" data-lucide="thermometer" aria-hidden="true"></i>
+            <span class="metrica__rotulo">Temperatura</span>
+          </div>
+          <p class="metrica__valor"><span data-campo="temperatura">48</span><small>°C</small></p>
+        </article>
+
+        <article class="card metrica">
+          <div class="metrica__topo">
+            <i class="icon" data-lucide="weight" aria-hidden="true"></i>
+            <span class="metrica__rotulo">Produção</span>
+          </div>
+          <p class="metrica__valor"><span data-campo="producao">127</span><small>kg</small></p>
+        </article>
+
+        <article class="card metrica">
+          <div class="metrica__topo">
+            <i class="icon" data-lucide="clock" aria-hidden="true"></i>
+            <span class="metrica__rotulo">Última atualização</span>
+          </div>
+          <p class="metrica__valor"><span data-campo="horario">14:32</span></p>
+        </article>
+
+      </section>
+
+      <!-- Equipamentos -->
+      <section aria-label="Equipamentos">
+        <h2 class="secao-titulo">Equipamento</h2>
+        <a href="#" class="card card-link" aria-label="Ver detalhes do equipamento Esteira 01">
+          <span class="card-link__nome">Esteira 01</span>
+          <i class="icon" data-lucide="chevron-right" aria-hidden="true"></i>
+        </a>
+      </section>
+
+      <!-- Nota informativa -->
+      <p class="nota">
+        <i class="icon" data-lucide="info" aria-hidden="true"></i>
+        <span>Os dados são atualizados automaticamente de acordo com a API.</span>
+      </p>
+
+    </div>
+  </main>
+
+  <!-- ================= NAVEGAÇÃO INFERIOR ================= -->
+  <nav class="nav-inferior" aria-label="Navegação principal">
+    <ul class="nav-inferior__lista">
+      <li>
+        <a href="dashboard.html" class="nav-item">
+          <i class="icon" data-lucide="house" aria-hidden="true"></i>
+          <span>Início</span>
+        </a>
+      </li>
+      <li>
+        <a href="esteira.html" class="nav-item is-ativo" aria-current="page">
+          <i class="icon" data-lucide="factory" aria-hidden="true"></i>
+          <span>Esteira</span>
+        </a>
+      </li>
+      <li>
+        <a href="alertas.html" class="nav-item">
+          <i class="icon" data-lucide="bell" aria-hidden="true"></i>
+          <span>Alertas</span>
+          <span class="badge-contador">3</span>
+        </a>
+      </li>
+      <li>
+        <a href="producao.html" class="nav-item">
+          <i class="icon" data-lucide="chart-no-axes-column" aria-hidden="true"></i>
+          <span>Produção</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
 </html>
