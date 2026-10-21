@@ -1,0 +1,12 @@
+# Publicar somente a aplicação; ferramentas e relatórios de teste ficam locais.
+node_modules
+src
+public
+tests
+test-results
+playwright-report
+.git
+.env*
+*.zip
+*.log
+README.md
