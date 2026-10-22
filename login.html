@@ -1,94 +1,101 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#084B60">
+  <!DOCTYPE html>
+  <html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#084B60">
 
-  <title>EcoCycle - Entrar</title>
+    <title>EcoCycle - Entrar</title>
 
-  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
 
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/login.css">
 
-  <script src="https://unpkg.com/lucide@latest"></script>
-</head>
+    <script src="https://unpkg.com/lucide@latest"></script>
+  </head>
 
-<body class="login-page">
-  <main class="login">
-    <section class="login__apresentacao" aria-label="Apresentação do EcoCycle">
-      <div class="login__marca">
-        <i data-lucide="leaf" class="login__logo-icon" aria-hidden="true"></i>
-        <span>EcoCycle</span>
-      </div>
-      <p class="login__slogan">Juntos por um futuro mais limpo</p>
-    </section>
-
-    <section class="login__painel" aria-labelledby="loginTitulo">
-      <div class="login__cabecalho">
-        <div class="login__marca login__marca--mobile">
+  <body class="login-page">
+    <main class="login">
+      <section class="login__apresentacao" aria-label="Apresentação do EcoCycle">
+        <div class="login__marca">
           <i data-lucide="leaf" class="login__logo-icon" aria-hidden="true"></i>
           <span>EcoCycle</span>
         </div>
-        <h1 id="loginTitulo">Acesse sua conta</h1>
-        <p>Monitore a operação da EcoCycle<br class="desktop-break"> em qualquer lugar.</p>
-      </div>
+        <p class="login__slogan">Juntos por um futuro mais limpo</p>
+      </section>
 
-      <form class="login__formulario" id="formLogin">
-        <label class="login__campo">
-          <span class="sr-only">E-mail</span>
-          <i data-lucide="mail" aria-hidden="true"></i>
-          <input type="email" name="email" placeholder="E-mail" autocomplete="username" required>
-        </label>
+      <section class="login__painel" aria-labelledby="loginTitulo">
+        <div class="login__cabecalho">
+          <div class="login__marca login__marca--mobile">
+            <i data-lucide="leaf" class="login__logo-icon" aria-hidden="true"></i>
+            <span>EcoCycle</span>
+          </div>
+          <h1 id="loginTitulo">Acesse sua conta</h1>
+          <p>Monitore a operação da EcoCycle<br class="desktop-break"> em qualquer lugar.</p>
+        </div>
 
-        <label class="login__campo">
-          <span class="sr-only">Senha</span>
-          <i data-lucide="lock-keyhole" aria-hidden="true"></i>
-          <input id="senha" type="password" name="senha" placeholder="Senha" autocomplete="current-password" required>
-          <button class="login__mostrar-senha" id="mostrarSenha" type="button" aria-label="Mostrar senha" aria-pressed="false">
-            <i data-lucide="eye" aria-hidden="true"></i>
-          </button>
-        </label>
+        <form class="login__formulario" id="formLogin">
+          <label class="login__campo">
+            <span class="sr-only">Nome de usuário</span>
+            <i data-lucide="user-round" aria-hidden="true"></i>
+            <input
+                id="nome"
+                type="text"
+                name="login"
+                placeholder="Nome de usuário"
+                autocomplete="username"
+                required
+            > 
+          </label>
 
-        <p class="login__mensagem" id="mensagemLogin" role="status" aria-live="polite"></p>
+          <label class="login__campo">
+            <span class="sr-only">Senha</span>
+            <i data-lucide="lock-keyhole" aria-hidden="true"></i>
+            <input id="senha" type="password" name="senha" placeholder="Senha" autocomplete="current-password" required>
+            <button class="login__mostrar-senha" id="mostrarSenha" type="button" aria-label="Mostrar senha" aria-pressed="false">
+              <i data-lucide="eye" aria-hidden="true"></i>
+            </button>
+          </label>
 
-        <button class="login__entrar" type="submit">Entrar</button>
-        <a class="login__esqueci" href="#" id="linkEsqueci">Esqueceu sua senha?</a>
-      </form>
-    </section>
+          <p class="login__mensagem" id="mensagemLogin" role="status" aria-live="polite"></p>
 
-    <p class="login__rodape">Tecnologia e sustentabilidade caminhando juntas.</p>
-  </main>
+          <button class="login__entrar" type="submit">Entrar</button>
+          <a class="login__esqueci" href="#" id="linkEsqueci">Esqueceu sua senha?</a>
+        </form>
+      </section>
 
-  <script>
-    lucide.createIcons();
+      <p class="login__rodape">Tecnologia e sustentabilidade caminhando juntas.</p>
+    </main>
 
-    const campoSenha = document.getElementById("senha");
-    const botaoMostrarSenha = document.getElementById("mostrarSenha");
-
-    botaoMostrarSenha.addEventListener("click", () => {
-      const vaiMostrar = campoSenha.type === "password";
-      campoSenha.type = vaiMostrar ? "text" : "password";
-      botaoMostrarSenha.setAttribute("aria-label", vaiMostrar ? "Ocultar senha" : "Mostrar senha");
-      botaoMostrarSenha.setAttribute("aria-pressed", String(vaiMostrar));
-      botaoMostrarSenha.innerHTML = vaiMostrar
-        ? '<i data-lucide="eye-off" aria-hidden="true"></i>'
-        : '<i data-lucide="eye" aria-hidden="true"></i>';
+    <script>
       lucide.createIcons();
-    });
 
-    document.getElementById("formLogin").addEventListener("submit", (event) => {
-      event.preventDefault();
-      document.getElementById("mensagemLogin").textContent =
-        "Formulário preenchido. Conecte esta tela à API de autenticação para validar o acesso.";
-    });
+      const campoSenha = document.getElementById("senha");
+      const botaoMostrarSenha = document.getElementById("mostrarSenha");
 
-    document.getElementById("linkEsqueci").addEventListener("click", (event) => {
-      event.preventDefault();
-      document.getElementById("mensagemLogin").textContent =
-        "A recuperação de senha poderá ser conectada ao fluxo de autenticação do sistema.";
-    });
-  </script>
-</body>
-</html>
+      botaoMostrarSenha.addEventListener("click", () => {
+        const vaiMostrar = campoSenha.type === "password";
+        campoSenha.type = vaiMostrar ? "text" : "password";
+        botaoMostrarSenha.setAttribute("aria-label", vaiMostrar ? "Ocultar senha" : "Mostrar senha");
+        botaoMostrarSenha.setAttribute("aria-pressed", String(vaiMostrar));
+        botaoMostrarSenha.innerHTML = vaiMostrar
+          ? '<i data-lucide="eye-off" aria-hidden="true"></i>'
+          : '<i data-lucide="eye" aria-hidden="true"></i>';
+        lucide.createIcons();
+      });
+
+      document.getElementById("formLogin").addEventListener("submit", (event) => {
+        event.preventDefault();
+        document.getElementById("mensagemLogin").textContent =
+          "Formulário preenchido. Conecte esta tela à API de autenticação para validar o acesso.";
+      });
+
+      document.getElementById("linkEsqueci").addEventListener("click", (event) => {
+        event.preventDefault();
+        document.getElementById("mensagemLogin").textContent =
+          "A recuperação de senha poderá ser conectada ao fluxo de autenticação do sistema.";
+      });
+    </script>
+  </body>
+  </html>

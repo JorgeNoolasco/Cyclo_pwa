@@ -34,12 +34,12 @@
   </header>
 
   <main class="app">
-    <!-- Aviso de conexão: o JS adiciona a classe .is-visivel quando necessário -->
-    <div class="aviso-conexao aviso-conexao--offline" id="avisoOffline" role="status">
-      Sem conexão. Exibindo os últimos dados salvos.
+   <div class="aviso-conexao" id="avisoOffline" role="status">
+    Sem conexão com a internet. Os dados podem estar desatualizados.
     </div>
+
     <div class="aviso-conexao aviso-conexao--antigo" id="avisoAntigo" role="status">
-      Os dados podem estar desatualizados.
+        Os dados podem estar desatualizados.
     </div>
 
     <div class="conteudo">
@@ -187,5 +187,8 @@
   <script>
     lucide.createIcons();
   </script>
+
+  <script type="module" src="js/dashboard.js"></script>
+
 </body>
 </html>
