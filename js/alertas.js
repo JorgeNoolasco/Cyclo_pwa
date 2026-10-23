@@ -1,28 +1,69 @@
-import { element, panel, icon, dateTime, empty } from './ui.js';
+/*
+ * Filtros da tela de alertas.
+ * Os cartões desta página são demonstrativos; não consultamos a API aqui.
+ */
+export function initAlertasPage() {
+    const cartoes = [...document.querySelectorAll('.alerta')];
+    const msgVazia = document.getElementById('mensagemVazia');
+    const painelSituacao = document.getElementById('filtroSituacao');
+    const btnFiltro = document.getElementById('btnFiltro');
 
-// A lista é somente de leitura. A resolução de alertas pertence à equipe de operação.
-export function renderAlerts(alerts, active, onFilter, unavailable, updated) {
-  const section = panel('ACOMPANHAMENTO OPERACIONAL', 'Eventos e alertas');
-  const filter = element('div', 'segmented'); filter.setAttribute('aria-label', 'Filtrar alertas');
-  for (const [label, value] of [['Ativos', true], ['Todos', false]]) {
-    const button = element('button', '', label); button.type = 'button';
-    button.setAttribute('aria-pressed', String(active === value));
-    button.addEventListener('click', () => onFilter(value)); filter.append(button);
-  }
-  section.append(filter, element('p', 'muted', 'Mais recentes primeiro. Resolução realizada pela equipe responsável.'));
-  if (updated) section.append(element('p', unavailable ? 'stale' : 'muted', `${unavailable ? 'Consulta anterior' : 'Consultado em'}: ${dateTime(updated)}`));
-  if (alerts === null) { section.append(empty('Não foi possível consultar os alertas.')); return section; }
-  if (!alerts.length) { section.append(empty(active ? 'Não há alertas ativos.' : 'Nenhum alerta foi disponibilizado.')); return section; }
-  const labels = { TEMPERATURA_ALTA: 'Temperatura alta', PARADA: 'Parada da esteira', EMERGENCIA: 'Emergência' };
-  const list = element('div', 'alerts-list');
-  for (const row of [...alerts].sort((a, b) => Date.parse(b.data_hora) - Date.parse(a.data_hora))) {
-    const article = element('article', 'alert-row');
-    const symbol = element('span', `alert-icon ${row.prioridade === 'ALTA' ? 'danger' : 'warn'}`); symbol.append(icon('alert'));
-    const description = element('div', 'alert-description');
-    description.append(element('h3', '', labels[row.tipo]), element('p', 'muted', `${row.equipamento} · ${dateTime(row.data_hora)}`));
-    article.append(symbol, description, element('span', 'priority', `Prioridade ${row.prioridade.toLowerCase()}`), element('span', `tag ${row.resolvido ? 'good' : 'warn'}`, row.resolvido ? 'Resolvido' : 'Pendente'));
-    list.append(article);
-  }
-  section.append(list);
-  return section;
+    if (!cartoes.length || !msgVazia || !painelSituacao || !btnFiltro) return;
+
+    let gravidade = 'todas';
+    let situacao = 'todos';
+
+    function aplicarFiltros() {
+        let visiveis = 0;
+
+        for (const cartao of cartoes) {
+            const correspondeGravidade = gravidade === 'todas' || cartao.dataset.gravidade === gravidade;
+            const correspondeSituacao = situacao === 'todos' || cartao.dataset.situacao === situacao;
+            cartao.hidden = !(correspondeGravidade && correspondeSituacao);
+            if (!cartao.hidden) visiveis++;
+        }
+
+        msgVazia.hidden = visiveis > 0;
+    }
+
+    document.querySelectorAll('[data-contador]').forEach(contador => {
+        const valor = contador.dataset.contador;
+        contador.textContent = valor === 'todas'
+            ? String(cartoes.length)
+            : String(cartoes.filter(cartao => cartao.dataset.gravidade === valor).length);
+    });
+
+    function ativarChip(seletor, botao) {
+        document.querySelectorAll(seletor).forEach(item => item.classList.remove('is-ativo'));
+        botao.classList.add('is-ativo');
+    }
+
+    document.querySelectorAll('[data-filtro-gravidade]').forEach(botao => {
+        botao.addEventListener('click', () => {
+            gravidade = botao.dataset.filtroGravidade;
+            ativarChip('[data-filtro-gravidade]', botao);
+            aplicarFiltros();
+        });
+    });
+
+    document.querySelectorAll('[data-filtro-situacao]').forEach(botao => {
+        botao.addEventListener('click', () => {
+            situacao = botao.dataset.filtroSituacao;
+            ativarChip('[data-filtro-situacao]', botao);
+            aplicarFiltros();
+        });
+    });
+
+    btnFiltro.addEventListener('click', () => {
+        const abrir = painelSituacao.hidden;
+        painelSituacao.hidden = !abrir;
+        btnFiltro.setAttribute('aria-expanded', String(abrir));
+    });
+
+    // Os cartões são links apenas por causa do estilo; não abrem uma tela de detalhe.
+    cartoes.forEach(cartao => cartao.addEventListener('click', event => event.preventDefault()));
+    aplicarFiltros();
+    window.lucide?.createIcons();
 }
+
+initAlertasPage();

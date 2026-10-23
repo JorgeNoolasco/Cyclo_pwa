@@ -8,13 +8,15 @@
   <title>EcoCycle - Alertas</title>
 
   <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
 
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/esteira.css">
   <link rel="stylesheet" href="css/alertas.css">
 
   <script src="https://unpkg.com/lucide@latest"></script>
-</head>x'
+</head>
 <body>
 
   <!-- ================= HEADER (voltar + filtro) ================= -->
@@ -44,6 +46,8 @@
     </div>
 
     <div class="conteudo">
+
+      <p class="nota"><i class="icon" data-lucide="info" aria-hidden="true"></i><span>Alertas demonstrativos. A integração com a API será feita quando o contrato do back-end estiver definido.</span></p>
 
       <!-- Filtro por gravidade -->
       <div class="filtros" role="group" aria-label="Filtrar por gravidade">
@@ -165,64 +169,8 @@
     </ul>
   </nav>
 
-  <script>
-    lucide.createIcons();
 
-    // ---------- Filtros (gravidade + situação) ----------
-    const cartoes = document.querySelectorAll('.alerta');
-    const msgVazia = document.getElementById('mensagemVazia');
-    const painelSituacao = document.getElementById('filtroSituacao');
-    const btnFiltro = document.getElementById('btnFiltro');
-
-    let gravidade = 'todas';
-    let situacao = 'todos';
-
-    function aplicarFiltros() {
-      let visiveis = 0;
-      cartoes.forEach(c => {
-        const okG = gravidade === 'todas' || c.dataset.gravidade === gravidade;
-        const okS = situacao === 'todos' || c.dataset.situacao === situacao;
-        c.hidden = !(okG && okS);
-        if (!c.hidden) visiveis++;
-      });
-      msgVazia.hidden = visiveis > 0;
-    }
-
-    // Contadores dos chips de gravidade (contam todos os alertas)
-    document.querySelectorAll('[data-contador]').forEach(el => {
-      const g = el.dataset.contador;
-      el.textContent = g === 'todas'
-        ? cartoes.length
-        : [...cartoes].filter(c => c.dataset.gravidade === g).length;
-    });
-
-    function ativarChip(seletor, botao) {
-      document.querySelectorAll(seletor).forEach(b => b.classList.remove('is-ativo'));
-      botao.classList.add('is-ativo');
-    }
-
-    document.querySelectorAll('[data-filtro-gravidade]').forEach(b => {
-      b.addEventListener('click', () => {
-        gravidade = b.dataset.filtroGravidade;
-        ativarChip('[data-filtro-gravidade]', b);
-        aplicarFiltros();
-      });
-    });
-
-    document.querySelectorAll('[data-filtro-situacao]').forEach(b => {
-      b.addEventListener('click', () => {
-        situacao = b.dataset.filtroSituacao;
-        ativarChip('[data-filtro-situacao]', b);
-        aplicarFiltros();
-      });
-    });
-
-    // Ícone de funil mostra/esconde o filtro de situação
-    btnFiltro.addEventListener('click', () => {
-      const abrir = painelSituacao.hidden;
-      painelSituacao.hidden = !abrir;
-      btnFiltro.setAttribute('aria-expanded', String(abrir));
-    });
-  </script>
+  <script type="module" src="js/alertas.js"></script>
+  <script type="module" src="js/pwa.js"></script>
 </body>
 </html>

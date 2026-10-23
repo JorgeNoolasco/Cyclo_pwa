@@ -45,7 +45,7 @@
 
       <!-- Última atualização -->
       <div class="atualizacao atualizacao--direita">
-        <span>Atualizado em: <time id="ultimaAtualizacao" datetime="2025-04-10T14:32">10/04/2025 14:32</time></span>
+        <span>Atualizado em: <time id="ultimaAtualizacao">Aguardando dados</time></span>
         <button class="btn-atualizar" id="btnAtualizar" type="button" aria-label="Atualizar dados">
           <i class="icon" data-lucide="refresh-cw" aria-hidden="true"></i>
         </button>
@@ -78,7 +78,7 @@
             <i class="icon" data-lucide="gauge" aria-hidden="true"></i>
             <span class="metrica__rotulo">Velocidade</span>
           </div>
-          <p class="metrica__valor"><span data-campo="velocidade">85</span><small>%</small></p>
+          <p class="metrica__valor"><span data-campo="velocidade">—</span><small>%</small></p>
         </article>
 
         <!-- Para temperatura alta, adicione .metrica--atencao ou .metrica--critico -->
@@ -87,7 +87,7 @@
             <i class="icon" data-lucide="thermometer" aria-hidden="true"></i>
             <span class="metrica__rotulo">Temperatura</span>
           </div>
-          <p class="metrica__valor"><span data-campo="temperatura">48</span><small>°C</small></p>
+          <p class="metrica__valor"><span data-campo="temperatura">—</span><small>°C</small></p>
         </article>
 
         <article class="card metrica">
@@ -95,7 +95,7 @@
             <i class="icon" data-lucide="weight" aria-hidden="true"></i>
             <span class="metrica__rotulo">Produção</span>
           </div>
-          <p class="metrica__valor"><span data-campo="producao">127</span><small>kg</small></p>
+          <p class="metrica__valor"><span data-campo="producao">—</span><small>kg</small></p>
         </article>
 
         <article class="card metrica">
@@ -103,7 +103,7 @@
             <i class="icon" data-lucide="clock" aria-hidden="true"></i>
             <span class="metrica__rotulo">Última atualização</span>
           </div>
-          <p class="metrica__valor"><span data-campo="horario">14:32</span></p>
+          <p class="metrica__valor"><span data-campo="horario">—</span></p>
         </article>
 
       </section>
@@ -157,8 +157,8 @@
     </ul>
   </nav>
 
-  <script>
-    lucide.createIcons();
-  </script>
+
+  <script type="module" src="js/esteira.js"></script>
+  <script type="module" src="js/pwa.js"></script>
 </body>
 </html>

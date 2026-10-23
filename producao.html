@@ -8,6 +8,8 @@
   <title>EcoCycle - Produção e Estoque</title>
 
   <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
 
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/esteira.css">
@@ -53,7 +55,7 @@
         </label>
 
         <div class="atualizacao">
-          <span>Atualizado: <time id="ultimaAtualizacao" datetime="2025-04-10T14:32">10/04/2025 14:32</time></span>
+          <span>Atualizado: <time id="ultimaAtualizacao">Aguardando dados</time></span>
           <button class="btn-atualizar" id="btnAtualizar" type="button" aria-label="Atualizar dados">
             <i class="icon" data-lucide="refresh-cw" aria-hidden="true"></i>
           </button>
@@ -70,7 +72,7 @@
               <div class="kpi__icone"><i class="icon" data-lucide="scale" aria-hidden="true"></i></div>
               <span class="kpi__rotulo">Produção diária</span>
             </div>
-            <p class="kpi__valor"><span data-campo="producaoDiaria">28,4</span><small>t</small></p>
+            <p class="kpi__valor"><span data-campo="producaoDiaria">—</span><small>t</small></p>
             <span class="kpi__variacao kpi__variacao--sobe">
               <i class="icon" style="width:14px;height:14px" data-lucide="arrow-up" aria-hidden="true"></i> 12%
             </span>
@@ -81,7 +83,7 @@
               <div class="kpi__icone"><i class="icon" data-lucide="calendar-days" aria-hidden="true"></i></div>
               <span class="kpi__rotulo">Produção mensal</span>
             </div>
-            <p class="kpi__valor"><span data-campo="producaoMensal">112</span><small>t</small></p>
+            <p class="kpi__valor"><span data-campo="producaoMensal">—</span><small>t</small></p>
             <span class="kpi__variacao kpi__variacao--sobe">
               <i class="icon" style="width:14px;height:14px" data-lucide="arrow-up" aria-hidden="true"></i> 8%
             </span>
@@ -92,7 +94,7 @@
               <div class="kpi__icone"><i class="icon" data-lucide="recycle" aria-hidden="true"></i></div>
               <span class="kpi__rotulo">Plástico</span>
             </div>
-            <p class="kpi__valor"><span data-campo="plastico">18,2</span><small>t</small></p>
+            <p class="kpi__valor"><span data-campo="plastico">—</span><small>t</small></p>
             <span class="kpi__variacao kpi__variacao--sobe">
               <i class="icon" style="width:14px;height:14px" data-lucide="arrow-up" aria-hidden="true"></i> 15%
             </span>
@@ -103,7 +105,7 @@
               <div class="kpi__icone"><i class="icon" data-lucide="settings" aria-hidden="true"></i></div>
               <span class="kpi__rotulo">Metal</span>
             </div>
-            <p class="kpi__valor"><span data-campo="metal">6,7</span><small>t</small></p>
+            <p class="kpi__valor"><span data-campo="metal">—</span><small>t</small></p>
             <span class="kpi__variacao kpi__variacao--sobe">
               <i class="icon" style="width:14px;height:14px" data-lucide="arrow-up" aria-hidden="true"></i> 8%
             </span>
@@ -125,11 +127,11 @@
             <div class="estoque-item__corpo">
               <div class="estoque-item__linha">
                 <span class="estoque-item__nome">Plástico</span>
-                <span class="estoque-item__valor"><span data-campo="estoquePlastico">12,5</span> t</span>
+                <span class="estoque-item__valor"><span data-campo="estoquePlastico">—</span> t</span>
               </div>
-              <div class="progresso" role="progressbar" aria-label="Estoque de plástico"
-                   aria-valuemin="0" aria-valuemax="100" aria-valuenow="62">
-                <div class="progresso__barra" style="--p: 62%"></div>
+              <div class="progresso" role="progressbar" aria-label="Participação do plástico no estoque total"
+                   aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <div class="progresso__barra" style="--p: 0%"></div>
               </div>
             </div>
           </div>
@@ -141,11 +143,11 @@
             <div class="estoque-item__corpo">
               <div class="estoque-item__linha">
                 <span class="estoque-item__nome">Metal</span>
-                <span class="estoque-item__valor"><span data-campo="estoqueMetal">5,8</span> t</span>
+                <span class="estoque-item__valor"><span data-campo="estoqueMetal">—</span> t</span>
               </div>
-              <div class="progresso" role="progressbar" aria-label="Estoque de metal"
-                   aria-valuemin="0" aria-valuemax="100" aria-valuenow="29">
-                <div class="progresso__barra progresso__barra--cinza" style="--p: 29%"></div>
+              <div class="progresso" role="progressbar" aria-label="Participação do metal no estoque total"
+                   aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <div class="progresso__barra progresso__barra--cinza" style="--p: 0%"></div>
               </div>
             </div>
           </div>
@@ -157,12 +159,12 @@
       <section class="card grafico" aria-label="Produção dos últimos 7 dias">
         <div class="grafico__topo">
           <h2 class="grafico__titulo">Produção dos últimos 7 dias</h2>
-          <span class="grafico__total">t</span>
+          <span class="grafico__total">Aguardando dados</span>
         </div>
 
-        <!-- Gráfico em SVG. Fórmula do ponto: x = 30 + 46,67 * índice | y = 110 - valor * 2,5 (escala 0 a 40 t) -->
+        <!-- O gráfico é preenchido com a produção diária retornada pela API. -->
         <svg class="linha" viewBox="0 0 330 140" role="img"
-             aria-label="Produção diária de 3 a 9 de abril, de 19 a 32 toneladas">
+             aria-label="Gráfico aguardando dados da API">
 
           <!-- grade e eixo Y -->
           <g class="linha__grade">
@@ -180,33 +182,7 @@
             <text x="22" y="13"  text-anchor="end">40</text>
           </g>
 
-          <!-- área e linha -->
-          <polygon class="linha__area"
-                   points="30,110 30,60 76.7,62.5 123.3,52.5 170,60 216.7,42.5 263.3,55 310,30 310,110"/>
-          <polyline class="linha__traco"
-                    points="30,60 76.7,62.5 123.3,52.5 170,60 216.7,42.5 263.3,55 310,30"/>
-
-          <!-- pontos -->
-          <g class="linha__pontos">
-            <circle cx="30"    cy="60"   r="3.5"/>
-            <circle cx="76.7"  cy="62.5" r="3.5"/>
-            <circle cx="123.3" cy="52.5" r="3.5"/>
-            <circle cx="170"   cy="60"   r="3.5"/>
-            <circle cx="216.7" cy="42.5" r="3.5"/>
-            <circle cx="263.3" cy="55"   r="3.5"/>
-            <circle cx="310"   cy="30"   r="3.5"/>
-          </g>
-
-          <!-- eixo X -->
-          <g class="linha__eixo-x">
-            <text x="30"    y="130" text-anchor="middle">3/04</text>
-            <text x="76.7"  y="130" text-anchor="middle">4/04</text>
-            <text x="123.3" y="130" text-anchor="middle">5/04</text>
-            <text x="170"   y="130" text-anchor="middle">6/04</text>
-            <text x="216.7" y="130" text-anchor="middle">7/04</text>
-            <text x="263.3" y="130" text-anchor="middle">8/04</text>
-            <text x="310"   y="130" text-anchor="middle">9/04</text>
-          </g>
+          <g class="linha__eixo-x"></g>
         </svg>
       </section>
 
@@ -250,14 +226,8 @@
     </ul>
   </nav>
 
-  <script>
-    lucide.createIcons();
 
-    // Troca de período: aqui você vai chamar a API com o período escolhido
-    document.getElementById('selectPeriodo').addEventListener('change', (e) => {
-      console.log('Período selecionado:', e.target.value);
-      // TODO: buscar dados da API e atualizar os cards, o estoque e o gráfico
-    });
-  </script>
+  <script type="module" src="js/estoque.js"></script>
+  <script type="module" src="js/pwa.js"></script>
 </body>
 </html>
