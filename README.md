@@ -96,3 +96,7 @@ Modificados: HTMLs de login/dashboard/esteira/alertas/produção/menu; módulos 
 ## Limitações restantes
 
 Sem URL de produção nem API com contrato e autorização completos, não é possível afirmar que o CYCLO está integrado à operação real. Também faltam aplicação/publicação do patch pela equipe Web e instalação em dispositivos físicos. A interface trata essas ausências sem inventar valores ou simular sucesso. Não se alega conformidade completa com LGPD, OWASP ou normas técnicas.
+
+## Licença
+
+Este projeto é distribuído sob a Licença MIT. Consulte o arquivo LICENSE para mais informações.
