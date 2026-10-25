@@ -21,7 +21,6 @@
   overflow: hidden;
   background:
     linear-gradient(180deg, rgba(3, 42, 53, 0.25) 0%, rgba(3, 42, 53, 0.72) 45%, rgba(3, 42, 53, 0.92) 100%),
-    url("img/login-fundo.jpg") center / cover no-repeat,
     linear-gradient(145deg, #084B60, #05384A 60%, #1f5a4b);
 }
 

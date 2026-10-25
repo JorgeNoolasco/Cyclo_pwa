@@ -1,0 +1,59 @@
+--- a/src/shared/layout.js
++++ b/src/shared/layout.js
+@@ -19,6 +19,7 @@
+  *  - acao: se informada (chave de PERMISSOES, em session.js), só quem pode executá-la vê o item
+  */
+ export const MENU = [
++    { rotulo: 'Instalar aplicativo', icone: 'download', href: `${PAGINAS}/install/install.html` },
+     { rotulo: 'Dashboard', icone: 'grid-1x2-fill', href: `${PAGINAS}/dashboard/dashboard.html` },
+     {
+         rotulo: 'Produções', icone: 'buildings', filhos: [
+--- a/vite.config.js
++++ b/vite.config.js
+@@ -25,6 +25,7 @@
+         newSupplier: resolve(__dirname, './src/features/suppliers/new-supplier.html'),
+         suppliers: resolve(__dirname, './src/features/suppliers/suppliers.html'),
+         newBatch: resolve(__dirname, './src/features/batches/new-batch.html'),
++        install: resolve(__dirname, "src/features/install/install.html"),
+         // uma linha por página
+       },
+     },
+--- /dev/null
++++ b/src/features/install/install.html
+@@ -0,0 +1,14 @@
++<!doctype html>
++<html lang="pt-BR"><head>
++  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
++  <meta name="theme-color" content="#084B60"><title>EcoCycle Mobile</title>
++</head><body>
++  <div id="app-topo"></div><nav id="app-menu" class="menu"></nav>
++  <main class="conteudo-pagina"><section class="container py-4">
++    <h1>EcoCycle Mobile</h1>
++    <p>Acompanhe a produção, os alertas e os indicadores da EcoCycle diretamente pelo seu dispositivo.</p>
++    <button id="install-app" class="btn btn-eco" type="button">Instalar aplicativo</button>
++    <p id="install-status" class="mt-3" role="status"></p>
++  </section></main>
++  <script type="module" src="./install.js"></script>
++</body></html>
+--- /dev/null
++++ b/src/features/install/install.js
+@@ -0,0 +1,19 @@
++import { montarLayout } from '../../shared/layout.js';
++
++if (montarLayout()) {
++    const button = document.getElementById('install-app');
++    const message = document.getElementById('install-status');
++    let target;
++    try {
++        target = new URL(import.meta.env.VITE_CYCLO_URL);
++        const local = ['localhost', '127.0.0.1', '[::1]'].includes(target.hostname);
++        if ((target.protocol !== 'https:' && !(import.meta.env.DEV && local && target.protocol === 'http:')) ||
++            target.username || target.password || target.search || target.hash) throw new Error();
++        target.pathname = target.pathname.replace(/\/?$/, '/') + 'instalar.html';
++        message.textContent = 'Você será direcionado ao CYCLO para concluir a instalação no seu navegador.';
++        button.addEventListener('click', () => location.assign(target.href));
++    } catch {
++        button.disabled = true;
++        message.textContent = 'Instalação temporariamente indisponível. Entre em contato com a equipe EcoCycle.';
++    }
++}

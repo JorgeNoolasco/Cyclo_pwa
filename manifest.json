@@ -1,17 +1,32 @@
 {
   "id": "./",
-  "name": "EcoCycle — Reciclagem Inteligente",
-  "short_name": "EcoCycle",
+  "name": "CYCLO — EcoCycle Mobile",
+  "short_name": "CYCLO",
   "description": "Monitoramento de reciclagem da Equipe 06, somente para consulta.",
   "lang": "pt-BR",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#F8FAFC",
-  "theme_color": "#166534",
+  "background_color": "#F4F7F6",
+  "theme_color": "#084B60",
   "icons": [
-    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "assets/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }

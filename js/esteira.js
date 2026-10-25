@@ -1,12 +1,11 @@
 import { CONFIG } from './config.js';
-import { request, ApiError } from './api.js';
-import { getSession } from './auth.js';
-import { setScenario } from './mocks.js';
 import { setText, setTime } from './ui.js';
+import { monitor } from './monitor.js';
+
+export function mount() {
 
 const $ = id => document.getElementById(id);
 const campo = nome => document.querySelector(`[data-campo="${nome}"]`);
-const CENARIOS = ['normal', 'stale', 'emergency', 'stopped', 'off', 'disconnected', 'empty', '401', '403', '500', 'offline'];
 const ESTADOS = {
     LIGADA: { ponto: 'ligada', texto: 'Ligada', badge: 'normal', rotulo: 'Normal' },
     DESLIGADA: { ponto: 'parada', texto: 'Desligada', badge: 'atencao', rotulo: 'Atenção' },
@@ -18,15 +17,13 @@ const SEM_COMUNICACAO = { ponto: 'sem-comunicacao', texto: 'Sem comunicação', 
 let dataAtual = null;
 let erro = '';
 let consultando = false;
-let controller = null;
-let geracao = 0;
 
 const online = () => navigator.onLine;
-const dataAntiga = valor => !Number.isFinite(Date.parse(valor)) || Date.now() - Date.parse(valor) > CONFIG.STALE_AFTER;
+const dataAntiga = valor => !Number.isFinite(Date.parse(valor)) || Date.parse(valor) > Date.now() + 5000 || Date.now() - Date.parse(valor) > CONFIG.STALE_AFTER;
 
 function estadoAtual() {
     const belt = dataAtual?.esteira;
-    if (!belt || !online() || erro || !belt.conectada || dataAntiga(belt.ultima_leitura)) return SEM_COMUNICACAO;
+    if (monitorStale || !belt || !online() || erro || belt.conectada === false || dataAntiga(belt.ultima_leitura)) return SEM_COMUNICACAO;
     return ESTADOS[belt.estado] || SEM_COMUNICACAO;
 }
 
@@ -61,18 +58,18 @@ function atualizarEstado() {
     const ultimaLeitura = belt?.ultima_leitura;
     if (ultimaLeitura) {
         const horario = new Date(ultimaLeitura);
-        setText('[data-campo="horario"]', Number.isFinite(horario.getTime()) ? horario.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '—');
+        setText('[data-campo="horario"]', Number.isFinite(horario.getTime()) ? horario.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) : '—');
     } else {
         setText('[data-campo="horario"]', '—');
     }
 
-    if (dataAtual?.atualizado_em) setTime('#ultimaAtualizacao', dataAtual.atualizado_em);
+    if (dataAtual && consultedAt) setTime('#ultimaAtualizacao', dataAtual.atualizado_em || consultedAt);
     else {
         setText('#ultimaAtualizacao', 'Aguardando dados');
         $('ultimaAtualizacao')?.removeAttribute('datetime');
     }
 
-    const stale = !online() || Boolean(erro) || !belt || !belt.conectada || dataAntiga(belt?.ultima_leitura);
+    const stale = monitorStale || !online() || Boolean(erro) || !belt || belt.conectada === false || dataAntiga(belt?.ultima_leitura);
     $('avisoOffline')?.classList.toggle('is-visivel', !online());
     $('avisoAntigo')?.classList.toggle('is-visivel', online() && stale);
     if ($('avisoAntigo')) $('avisoAntigo').textContent = erro ? `${erro} Os dados podem não representar o estado atual.` : 'Os dados podem estar desatualizados.';
@@ -85,62 +82,14 @@ function atualizarEstado() {
     }
 }
 
-function cancelarConsulta() {
-    geracao++;
-    controller?.abort();
-    controller = null;
-    consultando = false;
-}
 
-async function atualizar() {
-    if (consultando || document.visibilityState !== 'visible') return;
-    const sessao = getSession();
-    if (!sessao && !CONFIG.USE_MOCK) {
-        location.replace('login.html');
-        return;
-    }
-    if (!online()) { atualizarEstado(); return; }
-
-    const atual = ++geracao;
-    controller = new AbortController();
-    consultando = true;
-    atualizarEstado();
-
-    try {
-        const resultado = await request('dashboard', { token: sessao?.token, signal: controller.signal });
-        if (atual !== geracao) return;
-        dataAtual = resultado;
-        erro = '';
-    } catch (error) {
-        if (atual !== geracao || error.name === 'AbortError') return;
-        if (error instanceof ApiError && error.status === 401) { location.replace('login.html'); return; }
-        dataAtual = dataAtual;
-        erro = error instanceof ApiError ? error.message : 'Não foi possível consultar os dados.';
-    } finally {
-        if (atual === geracao) {
-            consultando = false;
-            controller = null;
-            atualizarEstado();
-        }
-    }
-}
-
-function iniciar() {
-    const cenario = new URLSearchParams(location.search).get('cenario');
-    if (CONFIG.USE_MOCK && CENARIOS.includes(cenario)) setScenario(cenario);
-    $('btnAtualizar')?.addEventListener('click', atualizar);
-    window.addEventListener('online', atualizarEstado);
-    window.addEventListener('offline', () => { cancelarConsulta(); atualizarEstado(); });
-    document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'hidden') cancelarConsulta();
-        else void atualizar();
+    let monitorStale = true, consultedAt = null;
+    document.getElementById('selectPeriodo')?.addEventListener('change', atualizarEstado);
+    return monitor('dashboard', state => {
+        dataAtual = state.data; erro = state.error; consultando = state.busy;
+        monitorStale = state.stale; consultedAt = state.consultedAt;
+        atualizarEstado();
+        const time = document.getElementById('ultimaAtualizacao');
+        if (time) time.title = 'Horário da consulta. A última leitura do equipamento pode ser anterior.';
     });
-    window.addEventListener('session-ended', () => location.replace('login.html'));
-    setText('[data-campo="velocidade"]', '—');
-    setText('[data-campo="producao"]', '—');
-    atualizarEstado();
-    void atualizar();
-    setInterval(atualizar, CONFIG.POLL_INTERVAL);
 }
-
-iniciar();

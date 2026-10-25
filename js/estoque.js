@@ -1,17 +1,14 @@
 import { CONFIG } from './config.js';
-import { request, ApiError } from './api.js';
-import { getSession } from './auth.js';
-import { setScenario } from './mocks.js';
 import { setText, setTime, tonnes, number } from './ui.js';
+import { monitor } from './monitor.js';
+
+export function mount() {
 
 const $ = id => document.getElementById(id);
-const CENARIOS = ['normal', 'stale', 'emergency', 'stopped', 'off', 'disconnected', 'empty', '401', '403', '500', 'offline'];
 
 let dataAtual = null;
 let erro = '';
 let consultando = false;
-let controller = null;
-let geracao = 0;
 
 const online = () => navigator.onLine;
 
@@ -114,7 +111,7 @@ function atualizarEstoque() {
 function atualizarTela() {
     const rows = Array.isArray(dataAtual?.producao_diaria) ? [...dataAtual.producao_diaria].sort((a, b) => a.data.localeCompare(b.data)) : [];
     const periodo = $('selectPeriodo')?.value || 'hoje';
-    const hoje = new Date().toISOString().slice(0, 10);
+    const hoje = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo' }).format(new Date());
     let selecionadas = [];
     let rotulo = 'Produção diária';
 
@@ -122,7 +119,8 @@ function atualizarTela() {
         selecionadas = rows.filter(row => row.data === hoje);
         rotulo = 'Produção diária';
     } else if (periodo === '7d') {
-        selecionadas = rows.slice(-7);
+        const end = new Date(`${hoje}T12:00:00Z`); end.setUTCDate(end.getUTCDate() - 6);
+        selecionadas = rows.filter(row => row.data >= end.toISOString().slice(0,10) && row.data <= hoje);
         rotulo = 'Produção nos últimos 7 dias';
     }
 
@@ -145,13 +143,13 @@ function atualizarTela() {
     atualizarEstoque();
     atualizarGrafico(rows.slice(-7));
 
-    if (dataAtual?.atualizado_em) setTime('#ultimaAtualizacao', dataAtual.atualizado_em);
+    if (dataAtual && consultedAt) setTime('#ultimaAtualizacao', dataAtual.atualizado_em || consultedAt);
     else {
         setText('#ultimaAtualizacao', 'Aguardando dados');
         $('ultimaAtualizacao')?.removeAttribute('datetime');
     }
 
-    const stale = !online() || Boolean(erro) || !dataAtual || Date.now() - Date.parse(dataAtual.atualizado_em) > CONFIG.STALE_AFTER;
+    const stale = monitorStale || !online() || Boolean(erro) || !dataAtual || (dataAtual.atualizado_em && Date.now() - Date.parse(dataAtual.atualizado_em) > CONFIG.STALE_AFTER);
     $('avisoOffline')?.classList.toggle('is-visivel', !online());
     $('avisoAntigo')?.classList.toggle('is-visivel', online() && stale);
     if ($('avisoAntigo')) $('avisoAntigo').textContent = erro ? `${erro} Os dados exibidos podem estar desatualizados.` : 'Os dados podem estar desatualizados.';
@@ -162,57 +160,14 @@ function atualizarTela() {
     }
 }
 
-function cancelarConsulta() {
-    geracao++;
-    controller?.abort();
-    controller = null;
-    consultando = false;
-}
 
-async function atualizar() {
-    if (consultando || document.visibilityState !== 'visible') return;
-    const sessao = getSession();
-    if (!sessao && !CONFIG.USE_MOCK) { location.replace('login.html'); return; }
-    if (!online()) { atualizarTela(); return; }
-
-    const atual = ++geracao;
-    controller = new AbortController();
-    consultando = true;
-    atualizarTela();
-
-    try {
-        const resultado = await request('dashboard', { token: sessao?.token, signal: controller.signal });
-        if (atual !== geracao) return;
-        dataAtual = resultado;
-        erro = '';
-    } catch (error) {
-        if (atual !== geracao || error.name === 'AbortError') return;
-        if (error instanceof ApiError && error.status === 401) { location.replace('login.html'); return; }
-        erro = error instanceof ApiError ? error.message : 'Não foi possível consultar os dados.';
-    } finally {
-        if (atual === geracao) {
-            consultando = false;
-            controller = null;
-            atualizarTela();
-        }
-    }
-}
-
-function iniciar() {
-    const cenario = new URLSearchParams(location.search).get('cenario');
-    if (CONFIG.USE_MOCK && CENARIOS.includes(cenario)) setScenario(cenario);
-    $('btnAtualizar')?.addEventListener('click', atualizar);
-    $('selectPeriodo')?.addEventListener('change', atualizarTela);
-    window.addEventListener('online', atualizarTela);
-    window.addEventListener('offline', () => { cancelarConsulta(); atualizarTela(); });
-    document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'hidden') cancelarConsulta();
-        else void atualizar();
+    let monitorStale = true, consultedAt = null;
+    document.getElementById('selectPeriodo')?.addEventListener('change', atualizarTela);
+    return monitor('dashboard', state => {
+        dataAtual = state.data; erro = state.error; consultando = state.busy;
+        monitorStale = state.stale; consultedAt = state.consultedAt;
+        atualizarTela();
+        const time = document.getElementById('ultimaAtualizacao');
+        if (time) time.title = 'Horário da consulta. A última leitura do equipamento pode ser anterior.';
     });
-    window.addEventListener('session-ended', () => location.replace('login.html'));
-    atualizarTela();
-    void atualizar();
-    setInterval(atualizar, CONFIG.POLL_INTERVAL);
 }
-
-iniciar();

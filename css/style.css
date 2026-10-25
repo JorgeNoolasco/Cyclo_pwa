@@ -401,3 +401,11 @@ button:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   .btn-atualizar.is-carregando .icon { animation: none; }
 }
+
+/* Controle de visibilidade não altera o desenho das telas. */
+body[data-ready="false"] > :not(noscript) { visibility: hidden; }
+[hidden] { display: none !important; }
+.valor-indisponivel { font-size: 0.75rem; font-weight: 400; overflow-wrap: anywhere; }
+[data-campo="horario"] { font-size: 0.9rem; }
+.kpi__variacao { display: none; }
+.kpi__variacao .icon { width: 14px; height: 14px; }

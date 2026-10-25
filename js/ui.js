@@ -59,7 +59,10 @@ export function setText(selector, value, root = document) {
         return false;
     }
 
-    node.textContent = value ?? '—';
+    const unavailable = node.hasAttribute('data-campo') && (value == null || value === '—');
+    node.textContent = unavailable ? 'Informação indisponível' : (value ?? '—');
+    node.classList.toggle('valor-indisponivel', unavailable);
+    if (node.nextElementSibling?.tagName === 'SMALL') node.nextElementSibling.hidden = unavailable;
 
     return true;
 }

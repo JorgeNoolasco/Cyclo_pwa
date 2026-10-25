@@ -15,9 +15,11 @@
   <link rel="stylesheet" href="css/esteira.css">
   <link rel="stylesheet" href="css/alertas.css">
 
-  <script src="https://unpkg.com/lucide@latest"></script>
+
+<script defer src="assets/vendor/lucide.min.js"></script>
+<script type="module" src="js/app.js"></script>
 </head>
-<body>
+<body data-ready="false">
 
   <!-- ================= HEADER (voltar + filtro) ================= -->
   <header class="app-header">
@@ -39,7 +41,7 @@
   <main class="app">
     <!-- Aviso de conexão: o JS adiciona a classe .is-visivel quando necessário -->
     <div class="aviso-conexao aviso-conexao--offline" id="avisoOffline" role="status">
-      Sem conexão. Exibindo os últimos dados salvos.
+      Sem conexão. Dados desta sessão podem estar desatualizados. Nenhum dado privado é salvo offline.
     </div>
     <div class="aviso-conexao aviso-conexao--antigo" id="avisoAntigo" role="status">
       Os dados podem estar desatualizados.
@@ -47,14 +49,14 @@
 
     <div class="conteudo">
 
-      <p class="nota"><i class="icon" data-lucide="info" aria-hidden="true"></i><span>Alertas demonstrativos. A integração com a API será feita quando o contrato do back-end estiver definido.</span></p>
+      <p class="nota"><i class="icon" data-lucide="info" aria-hidden="true"></i><span>Gravidade é exibida somente quando informada pela API.</span></p>
 
       <!-- Filtro por gravidade -->
       <div class="filtros" role="group" aria-label="Filtrar por gravidade">
-        <button class="chip is-ativo" type="button" data-filtro-gravidade="todas">Todos <span data-contador="todas">5</span></button>
-        <button class="chip" type="button" data-filtro-gravidade="alta">Alta <span data-contador="alta">1</span></button>
-        <button class="chip" type="button" data-filtro-gravidade="media">Média <span data-contador="media">2</span></button>
-        <button class="chip" type="button" data-filtro-gravidade="baixa">Baixa <span data-contador="baixa">2</span></button>
+        <button class="chip is-ativo" type="button" data-filtro-gravidade="todas">Todos <span data-contador="todas">—</span></button>
+        <button class="chip" type="button" data-filtro-gravidade="alta">Alta <span data-contador="alta">—</span></button>
+        <button class="chip" type="button" data-filtro-gravidade="media">Média <span data-contador="media">—</span></button>
+        <button class="chip" type="button" data-filtro-gravidade="baixa">Baixa <span data-contador="baixa">—</span></button>
       </div>
 
       <!-- Filtro por situação (abre pelo ícone de funil) -->
@@ -64,70 +66,10 @@
         <button class="chip" type="button" data-filtro-situacao="resolvido">Resolvidos</button>
       </div>
 
-      <!-- Lista de alertas -->
-      <section class="lista-alertas" id="listaAlertas" aria-label="Lista de alertas">
-
-        <a href="#" class="card alerta alerta--alta" data-gravidade="alta" data-situacao="ativo">
-          <div class="alerta__icone"><i class="icon" data-lucide="thermometer" aria-hidden="true"></i></div>
-          <div class="alerta__corpo">
-            <h2 class="alerta__titulo">Temperatura elevada na esteira</h2>
-            <p class="alerta__meta">Esteira 01 · <time datetime="2025-04-10T12:45">10/04/2025 12:45</time></p>
-          </div>
-          <div class="alerta__badges">
-            <span class="badge badge--alta">Alta</span>
-            <span class="badge badge--ativo">Ativo</span>
-          </div>
-        </a>
-
-        <a href="#" class="card alerta alerta--media" data-gravidade="media" data-situacao="ativo">
-          <div class="alerta__icone"><i class="icon" data-lucide="activity" aria-hidden="true"></i></div>
-          <div class="alerta__corpo">
-            <h2 class="alerta__titulo">Vibração anormal no motor</h2>
-            <p class="alerta__meta">Motor 02 · <time datetime="2025-04-10T10:12">10/04/2025 10:12</time></p>
-          </div>
-          <div class="alerta__badges">
-            <span class="badge badge--media">Média</span>
-            <span class="badge badge--ativo">Ativo</span>
-          </div>
-        </a>
-
-        <a href="#" class="card alerta alerta--media" data-gravidade="media" data-situacao="ativo">
-          <div class="alerta__icone"><i class="icon" data-lucide="package" aria-hidden="true"></i></div>
-          <div class="alerta__corpo">
-            <h2 class="alerta__titulo">Nível de estoque baixo</h2>
-            <p class="alerta__meta">PET · <time datetime="2025-04-08T11:30">08/04/2025 11:30</time></p>
-          </div>
-          <div class="alerta__badges">
-            <span class="badge badge--media">Média</span>
-            <span class="badge badge--ativo">Ativo</span>
-          </div>
-        </a>
-
-        <a href="#" class="card alerta alerta--baixa" data-gravidade="baixa" data-situacao="resolvido">
-          <div class="alerta__icone"><i class="icon" data-lucide="wrench" aria-hidden="true"></i></div>
-          <div class="alerta__corpo">
-            <h2 class="alerta__titulo">Manutenção preventiva</h2>
-            <p class="alerta__meta">Esteira 01 · <time datetime="2025-04-09T16:20">09/04/2025 16:20</time></p>
-          </div>
-          <div class="alerta__badges">
-            <span class="badge badge--baixa">Baixa</span>
-            <span class="badge badge--resolvido">Resolvido</span>
-          </div>
-        </a>
-
-        <a href="#" class="card alerta alerta--baixa" data-gravidade="baixa" data-situacao="resolvido">
-          <div class="alerta__icone"><i class="icon" data-lucide="circle-check" aria-hidden="true"></i></div>
-          <div class="alerta__corpo">
-            <h2 class="alerta__titulo">Sensor de peso normalizado</h2>
-            <p class="alerta__meta">Esteira 01 · <time datetime="2025-04-09T14:03">09/04/2025 14:03</time></p>
-          </div>
-          <div class="alerta__badges">
-            <span class="badge badge--baixa">Baixa</span>
-            <span class="badge badge--resolvido">Resolvido</span>
-          </div>
-        </a>
-
-      </section>
+      <button type="button" class="chip" id="btnAtualizar">Atualizar</button>
+<time class="nota" id="ultimaAtualizacao">Aguardando dados</time>
+<!-- Lista de alertas -->
+      <section class="lista-alertas" id="listaAlertas" aria-label="Lista de alertas"></section>
 
       <!-- Estado vazio (aparece quando nenhum alerta corresponde aos filtros) -->
       <p class="vazio" id="mensagemVazia" hidden>
@@ -157,7 +99,7 @@
         <a href="alertas.html" class="nav-item is-ativo" aria-current="page">
           <i class="icon" data-lucide="bell" aria-hidden="true"></i>
           <span>Alertas</span>
-          <span class="badge-contador">3</span>
+          <span class="badge-contador">—</span>
         </a>
       </li>
       <li>
@@ -170,7 +112,7 @@
   </nav>
 
 
-  <script type="module" src="js/alertas.js"></script>
-  <script type="module" src="js/pwa.js"></script>
+
+
 </body>
 </html>

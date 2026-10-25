@@ -13,9 +13,13 @@
   <link rel="stylesheet" href="css/esteira.css">
   <link rel="stylesheet" href="css/menu.css">
 
-  <script src="https://unpkg.com/lucide@latest"></script>
+
+<script defer src="assets/vendor/lucide.min.js"></script>
+<script type="module" src="js/app.js"></script>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="assets/icons/icon-192.png">
 </head>
-<body>
+<body data-ready="false">
 
   <!-- ================= HEADER (voltar) ================= -->
   <header class="app-header">
@@ -32,7 +36,7 @@
   <main class="app">
     <!-- Aviso de conexão: o JS adiciona a classe .is-visivel quando necessário -->
     <div class="aviso-conexao aviso-conexao--offline" id="avisoOffline" role="status">
-      Sem conexão. Exibindo os últimos dados salvos.
+      Sem conexão. Dados desta sessão podem estar desatualizados. Nenhum dado privado é salvo offline.
     </div>
 
     <div class="conteudo">
@@ -43,9 +47,9 @@
           <i class="icon" data-lucide="user-round"></i>
         </div>
         <div class="perfil__dados">
-          <h2 class="perfil__nome" id="nomeCompleto">Ana Silva</h2>
-          <p class="perfil__cargo" id="cargoUsuario">Gerente</p>
-          <p class="perfil__email" id="emailUsuario">ana.silva@ecocycle.com</p>
+          <h2 class="perfil__nome" id="nomeCompleto"></h2>
+          <p class="perfil__cargo" id="cargoUsuario"></p>
+          <p class="perfil__email" id="emailUsuario"></p>
         </div>
       </section>
 
@@ -70,7 +74,7 @@
             <a href="alertas.html" class="menu-item">
               <i class="icon" data-lucide="bell" aria-hidden="true"></i>
               <span class="menu-item__texto">Alertas</span>
-              <span class="menu-badge" aria-label="3 alertas ativos">3</span>
+              <span class="menu-badge" hidden></span>
               <i class="icon menu-item__seta" data-lucide="chevron-right" aria-hidden="true"></i>
             </a>
           </li>
@@ -88,11 +92,11 @@
       <section class="card menu-lista" aria-label="Aplicativo">
         <ul>
           <!-- Aparece só quando o navegador permitir instalar a PWA (ver JS) -->
-          <li id="itemInstalar" hidden>
-            <button type="button" class="menu-item" id="btnInstalar">
+          <li id="itemInstalar">
+            <a class="menu-item" href="instalar.html" id="btnInstalar">
               <i class="icon" data-lucide="download" aria-hidden="true"></i>
               <span class="menu-item__texto">Instalar aplicativo</span>
-            </button>
+            </a>
           </li>
           <li>
             <button type="button" class="menu-item" id="btnSobre">
@@ -152,7 +156,7 @@
         <a href="alertas.html" class="nav-item">
           <i class="icon" data-lucide="bell" aria-hidden="true"></i>
           <span>Alertas</span>
-          <span class="badge-contador">3</span>
+          <span class="badge-contador">—</span>
         </a>
       </li>
       <li>
@@ -164,40 +168,6 @@
     </ul>
   </nav>
 
-  <script>
-    lucide.createIcons();
 
-    // ---------- Sobre ----------
-    const dialogo = document.getElementById('dialogoSobre');
-    document.getElementById('btnSobre').addEventListener('click', () => dialogo.showModal());
-    document.getElementById('btnFecharSobre').addEventListener('click', () => dialogo.close());
-    // Fecha ao clicar fora da caixa
-    dialogo.addEventListener('click', (e) => { if (e.target === dialogo) dialogo.close(); });
-
-    // ---------- Sair ----------
-    document.getElementById('btnSair').addEventListener('click', () => {
-      // TODO: chamar o logout da API (invalidar o token) e limpar a sessão
-      try { sessionStorage.clear(); } catch (e) {}
-      window.location.href = 'index.html'; // tela de login
-    });
-
-    // ---------- Instalar PWA ----------
-    let promptInstalacao = null;
-    const itemInstalar = document.getElementById('itemInstalar');
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      promptInstalacao = e;
-      itemInstalar.hidden = false;
-    });
-
-    document.getElementById('btnInstalar').addEventListener('click', async () => {
-      if (!promptInstalacao) return;
-      promptInstalacao.prompt();
-      await promptInstalacao.userChoice;
-      promptInstalacao = null;
-      itemInstalar.hidden = true;
-    });
-  </script>
 </body>
 </html>

@@ -10,3 +10,6 @@ playwright-report
 *.zip
 *.log
 README.md
+
+node_modulos/
+docs/

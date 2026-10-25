@@ -14,21 +14,23 @@
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
 
-  <script src="https://unpkg.com/lucide@latest"></script>
+
+<script defer src="assets/vendor/lucide.min.js"></script>
+<script type="module" src="js/app.js"></script>
 </head>
-<body>
+<body data-ready="false">
 
   <!-- ================= HEADER ================= -->
   <header class="app-header">
     <div class="app-header__inner">
-      <div class="brand">
+      <a class="brand" href="menu.html" aria-label="Abrir menu da conta" title="Menu da conta">
         <i class="icon" data-lucide="leaf" aria-hidden="true"></i>
         <span>EcoCycle</span>
-      </div>
+      </a>
 
-      <a href="alertas.html" class="btn-sino" aria-label="Alertas: 3 ativos">
+      <a href="alertas.html" class="btn-sino" aria-label="Alertas">
         <i class="icon" data-lucide="bell" aria-hidden="true"></i>
-        <span class="badge-contador" id="contadorSino">3</span>
+        <span class="badge-contador" id="contadorSino" hidden>—</span>
       </a>
     </div>
   </header>
@@ -45,13 +47,13 @@
     <div class="conteudo">
       <!-- Saudação -->
       <section class="saudacao">
-        <h1>Olá, <span id="nomeUsuario">Ana</span>!</h1>
+        <h1>Olá, <span id="nomeUsuario">usuário</span>!</h1>
         <p>Aqui está o resumo da operação de hoje.</p>
       </section>
 
       <!-- Última atualização -->
       <div class="atualizacao">
-        <span>Última atualização: <time id="ultimaAtualizacao" datetime="2025-04-10T14:32">10/04/2025 14:32</time></span>
+        <span>Última consulta: <time id="ultimaAtualizacao" >Aguardando dados</time></span>
         <button class="btn-atualizar" id="btnAtualizar" type="button" aria-label="Atualizar dados">
           <i class="icon" data-lucide="refresh-cw" aria-hidden="true"></i>
         </button>
@@ -66,9 +68,9 @@
             </div>
             <span class="kpi__rotulo">Toneladas processadas</span>
           </div>
-          <p class="kpi__valor"><span data-campo="toneladas">28,4</span><small>t</small></p>
+          <p class="kpi__valor"><span data-campo="toneladas">—</span><small>t</small></p>
           <span class="kpi__variacao kpi__variacao--sobe">
-            <i class="icon" style="width:14px;height:14px" data-lucide="arrow-up" aria-hidden="true"></i>
+            <i class="icon" width="14" height="14" data-lucide="arrow-up" aria-hidden="true"></i>
             12%
           </span>
         </article>
@@ -80,9 +82,9 @@
             </div>
             <span class="kpi__rotulo">Plástico recuperado</span>
           </div>
-          <p class="kpi__valor"><span data-campo="plastico">18,2</span><small>t</small></p>
+          <p class="kpi__valor"><span data-campo="plastico">—</span><small>t</small></p>
           <span class="kpi__variacao kpi__variacao--sobe">
-            <i class="icon" style="width:14px;height:14px" data-lucide="arrow-up" aria-hidden="true"></i>
+            <i class="icon" width="14" height="14" data-lucide="arrow-up" aria-hidden="true"></i>
             15%
           </span>
         </article>
@@ -94,9 +96,9 @@
             </div>
             <span class="kpi__rotulo">Metal recuperado</span>
           </div>
-          <p class="kpi__valor"><span data-campo="metal">6,7</span><small>t</small></p>
+          <p class="kpi__valor"><span data-campo="metal">—</span><small>t</small></p>
           <span class="kpi__variacao kpi__variacao--sobe">
-            <i class="icon" style="width:14px;height:14px" data-lucide="arrow-up" aria-hidden="true"></i>
+            <i class="icon" width="14" height="14" data-lucide="arrow-up" aria-hidden="true"></i>
             8%
           </span>
         </article>
@@ -108,9 +110,9 @@
             </div>
             <span class="kpi__rotulo">Alertas ativos</span>
           </div>
-          <p class="kpi__valor"><span data-campo="alertas">2</span></p>
+          <p class="kpi__valor"><span data-campo="alertas">—</span></p>
           <span class="kpi__variacao kpi__variacao--desce">
-            <i class="icon" style="width:14px;height:14px" data-lucide="arrow-down" aria-hidden="true"></i>
+            <i class="icon" width="14" height="14" data-lucide="arrow-down" aria-hidden="true"></i>
             50%
           </span>
         </a>
@@ -125,30 +127,23 @@
                  ponto--ligada | ponto--parada | ponto--falha | ponto--sem-comunicacao
                  badge--normal | badge--atencao | badge--critico | badge--sem-comunicacao -->
             <span class="ponto ponto--ligada" id="pontoEsteira"></span>
-            <span class="card-link__texto" id="textoEsteira">Ligada</span>
-            <span class="badge badge--normal" id="badgeEsteira">Normal</span>
+            <span class="card-link__texto" id="textoEsteira">Sem comunicação</span>
+            <span class="badge badge--normal" id="badgeEsteira">Sem dados</span>
           </div>
         </div>
         <i class="icon" data-lucide="arrow-right" aria-hidden="true"></i>
       </a>
 
       <!-- Produção mensal -->
-      <section class="card grafico" aria-label="Produção mensal">
+      <section class="card grafico" aria-label="Produção diária">
         <div class="grafico__topo">
           <h2 class="grafico__titulo">Produção mensal</h2>
-          <span class="grafico__total">112 t</span>
+          <span class="grafico__total">Informação indisponível</span>
         </div>
 
         <!-- --h = altura da barra em % (valor / maior valor) -->
-        <div class="barras" role="img" aria-label="Produção por mês: Jan 70, Fev 72, Mar 100, Abr 98">
-          <div class="barra" style="--h: 56%"></div>
-          <div class="barra" style="--h: 58%"></div>
-          <div class="barra" style="--h: 82%"></div>
-          <div class="barra barra--atual" style="--h: 78%"></div>
-        </div>
-        <div class="rotulos" aria-hidden="true">
-          <span>Jan</span><span>Fev</span><span>Mar</span><span>Abr</span>
-        </div>
+        <div class="barras" role="img" aria-label="Informação indisponível"></div>
+<div class="rotulos" aria-hidden="true"></div>
       </section>
     </div>
   </main>
@@ -172,7 +167,7 @@
         <a href="alertas.html" class="nav-item">
           <i class="icon" data-lucide="bell" aria-hidden="true"></i>
           <span>Alertas</span>
-          <span class="badge-contador">3</span>
+          <span class="badge-contador">—</span>
         </a>
       </li>
       <li>
@@ -184,11 +179,9 @@
     </ul>
   </nav>
 
-  <script>
-    lucide.createIcons();
-  </script>
 
-  <script type="module" src="js/dashboard.js"></script>
+
+
 
 </body>
 </html>

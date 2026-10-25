@@ -15,9 +15,11 @@
   <link rel="stylesheet" href="css/esteira.css">
   <link rel="stylesheet" href="css/producao.css">
 
-  <script src="https://unpkg.com/lucide@latest"></script>
+
+<script defer src="assets/vendor/lucide.min.js"></script>
+<script type="module" src="js/app.js"></script>
 </head>
-<body>
+<body data-ready="false">
 
   <!-- ================= HEADER (voltar + período) ================= -->
   <header class="app-header">
@@ -34,7 +36,7 @@
   <main class="app">
     <!-- Aviso de conexão: o JS adiciona a classe .is-visivel quando necessário -->
     <div class="aviso-conexao aviso-conexao--offline" id="avisoOffline" role="status">
-      Sem conexão. Exibindo os últimos dados salvos.
+      Sem conexão. Dados desta sessão podem estar desatualizados. Nenhum dado privado é salvo offline.
     </div>
     <div class="aviso-conexao aviso-conexao--antigo" id="avisoAntigo" role="status">
       Os dados podem estar desatualizados.
@@ -55,7 +57,7 @@
         </label>
 
         <div class="atualizacao">
-          <span>Atualizado: <time id="ultimaAtualizacao">Aguardando dados</time></span>
+          <span>Última consulta: <time id="ultimaAtualizacao">Aguardando dados</time></span>
           <button class="btn-atualizar" id="btnAtualizar" type="button" aria-label="Atualizar dados">
             <i class="icon" data-lucide="refresh-cw" aria-hidden="true"></i>
           </button>
@@ -74,7 +76,7 @@
             </div>
             <p class="kpi__valor"><span data-campo="producaoDiaria">—</span><small>t</small></p>
             <span class="kpi__variacao kpi__variacao--sobe">
-              <i class="icon" style="width:14px;height:14px" data-lucide="arrow-up" aria-hidden="true"></i> 12%
+              <i class="icon" width="14" height="14" data-lucide="arrow-up" aria-hidden="true"></i> 12%
             </span>
           </article>
 
@@ -85,7 +87,7 @@
             </div>
             <p class="kpi__valor"><span data-campo="producaoMensal">—</span><small>t</small></p>
             <span class="kpi__variacao kpi__variacao--sobe">
-              <i class="icon" style="width:14px;height:14px" data-lucide="arrow-up" aria-hidden="true"></i> 8%
+              <i class="icon" width="14" height="14" data-lucide="arrow-up" aria-hidden="true"></i> 8%
             </span>
           </article>
 
@@ -96,7 +98,7 @@
             </div>
             <p class="kpi__valor"><span data-campo="plastico">—</span><small>t</small></p>
             <span class="kpi__variacao kpi__variacao--sobe">
-              <i class="icon" style="width:14px;height:14px" data-lucide="arrow-up" aria-hidden="true"></i> 15%
+              <i class="icon" width="14" height="14" data-lucide="arrow-up" aria-hidden="true"></i> 15%
             </span>
           </article>
 
@@ -107,7 +109,7 @@
             </div>
             <p class="kpi__valor"><span data-campo="metal">—</span><small>t</small></p>
             <span class="kpi__variacao kpi__variacao--sobe">
-              <i class="icon" style="width:14px;height:14px" data-lucide="arrow-up" aria-hidden="true"></i> 8%
+              <i class="icon" width="14" height="14" data-lucide="arrow-up" aria-hidden="true"></i> 8%
             </span>
           </article>
         </div>
@@ -131,7 +133,7 @@
               </div>
               <div class="progresso" role="progressbar" aria-label="Participação do plástico no estoque total"
                    aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-                <div class="progresso__barra" style="--p: 0%"></div>
+                <div class="progresso__barra"></div>
               </div>
             </div>
           </div>
@@ -147,7 +149,7 @@
               </div>
               <div class="progresso" role="progressbar" aria-label="Participação do metal no estoque total"
                    aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-                <div class="progresso__barra progresso__barra--cinza" style="--p: 0%"></div>
+                <div class="progresso__barra progresso__barra--cinza"></div>
               </div>
             </div>
           </div>
@@ -214,7 +216,7 @@
         <a href="alertas.html" class="nav-item">
           <i class="icon" data-lucide="bell" aria-hidden="true"></i>
           <span>Alertas</span>
-          <span class="badge-contador">3</span>
+          <span class="badge-contador">—</span>
         </a>
       </li>
       <li>
@@ -227,7 +229,7 @@
   </nav>
 
 
-  <script type="module" src="js/estoque.js"></script>
-  <script type="module" src="js/pwa.js"></script>
+
+
 </body>
 </html>

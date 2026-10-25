@@ -16,10 +16,11 @@ export function getSession() {
 }
 
 // Envia o nome de usuário e a senha para a API.
-export async function login(nome, senha) {
+export async function login(nome, senha, signal) {
     const current = ++generation;
 
     const next = await request('login', {
+        signal,
         body: {
             login: nome,
             senha: senha
@@ -46,13 +47,13 @@ export async function login(nome, senha) {
 }
 
 // Encerra a sessão atual.
-export function logout(reason = '') {
+export function logout(reason = '', notify = true) {
     generation++;
     session = null;
 
     clearInterval(expirationTimer);
 
-    window.dispatchEvent(
+    if (notify) window.dispatchEvent(
         new CustomEvent('session-ended', {
             detail: reason
         })

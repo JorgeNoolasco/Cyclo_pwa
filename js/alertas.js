@@ -1,69 +1,53 @@
-/*
- * Filtros da tela de alertas.
- * Os cartões desta página são demonstrativos; não consultamos a API aqui.
- */
-export function initAlertasPage() {
-    const cartoes = [...document.querySelectorAll('.alerta')];
-    const msgVazia = document.getElementById('mensagemVazia');
-    const painelSituacao = document.getElementById('filtroSituacao');
-    const btnFiltro = document.getElementById('btnFiltro');
-
-    if (!cartoes.length || !msgVazia || !painelSituacao || !btnFiltro) return;
-
-    let gravidade = 'todas';
-    let situacao = 'todos';
-
-    function aplicarFiltros() {
-        let visiveis = 0;
-
-        for (const cartao of cartoes) {
-            const correspondeGravidade = gravidade === 'todas' || cartao.dataset.gravidade === gravidade;
-            const correspondeSituacao = situacao === 'todos' || cartao.dataset.situacao === situacao;
-            cartao.hidden = !(correspondeGravidade && correspondeSituacao);
-            if (!cartao.hidden) visiveis++;
-        }
-
-        msgVazia.hidden = visiveis > 0;
+import { monitor } from './monitor.js';
+import { element, dateTime, setText, setTime } from './ui.js';
+const titles = { TEMPERATURA_ALTA: 'Temperatura elevada na esteira', PARADA: 'Esteira parada', EMERGENCIA: 'Emergência na esteira' };
+export function mount() {
+    let severity = 'todas', situation = 'todos', latest;
+    const list = document.getElementById('listaAlertas');
+    function render(state) {
+        latest = state;
+        const rows = state.data;
+        list.replaceChildren();
+        const visible = (rows || []).filter(row => (severity === 'todas' || row.prioridade?.toLowerCase() === severity) &&
+            (situation === 'todos' || row.resolvido === (situation === 'resolvido')));
+        visible.sort((a,b) => Date.parse(b.data_hora) - Date.parse(a.data_hora)).forEach(row => {
+            const level = row.prioridade?.toLowerCase() || 'indisponivel';
+            const card = element('article', `card alerta alerta--${level}`); card.dataset.id = String(row.id);
+            const icon = element('div', 'alerta__icone');
+            const glyph = element('i', 'icon'); glyph.dataset.lucide = 'triangle-alert'; icon.append(glyph);
+            const body = element('div', 'alerta__corpo');
+            const meta = element('p', 'alerta__meta', `${row.equipamento} · `);
+            const time = element('time', '', dateTime(row.data_hora)); time.dateTime = row.data_hora; meta.append(time);
+            body.append(element('h2', 'alerta__titulo', titles[row.tipo]), meta);
+            const badges = element('div', 'alerta__badges');
+            badges.append(element('span', `badge badge--${level}`, row.prioridade || 'Gravidade indisponível'),
+                element('span', `badge badge--${row.resolvido ? 'resolvido' : 'ativo'}`, row.resolvido ? 'Resolvido' : 'Ativo'));
+            card.append(icon, body, badges); list.append(card);
+        });
+        const empty = document.getElementById('mensagemVazia'); empty.hidden = visible.length > 0;
+        empty.textContent = rows === null ? (state.busy ? 'Carregando alertas…' : 'Informação indisponível') : 'Nenhum alerta encontrado com esses filtros.';
+        document.querySelectorAll('[data-contador]').forEach(node => {
+            node.textContent = rows === null ? '—' : String(rows.filter(row => node.dataset.contador === 'todas' || row.prioridade?.toLowerCase() === node.dataset.contador).length);
+        });
+        setText('.badge-contador', rows === null ? '—' : rows.filter(row => !row.resolvido).length);
+        if (state.consultedAt) setTime('#ultimaAtualizacao', state.consultedAt);
+        else setText('#ultimaAtualizacao', 'Aguardando dados');
+        document.getElementById('avisoOffline').classList.toggle('is-visivel', !navigator.onLine);
+        document.getElementById('avisoAntigo').classList.toggle('is-visivel', navigator.onLine && state.stale);
+        setText('#avisoAntigo', state.error || 'Dados desatualizados ou ainda indisponíveis.');
+        document.getElementById('btnAtualizar').disabled = state.busy || !navigator.onLine;
+        window.lucide?.createIcons();
     }
-
-    document.querySelectorAll('[data-contador]').forEach(contador => {
-        const valor = contador.dataset.contador;
-        contador.textContent = valor === 'todas'
-            ? String(cartoes.length)
-            : String(cartoes.filter(cartao => cartao.dataset.gravidade === valor).length);
-    });
-
-    function ativarChip(seletor, botao) {
-        document.querySelectorAll(seletor).forEach(item => item.classList.remove('is-ativo'));
-        botao.classList.add('is-ativo');
-    }
-
-    document.querySelectorAll('[data-filtro-gravidade]').forEach(botao => {
-        botao.addEventListener('click', () => {
-            gravidade = botao.dataset.filtroGravidade;
-            ativarChip('[data-filtro-gravidade]', botao);
-            aplicarFiltros();
+    for (const type of ['gravidade', 'situacao']) document.querySelectorAll(`[data-filtro-${type}]`).forEach(button => {
+        button.addEventListener('click', () => {
+            if (type === 'gravidade') severity = button.dataset.filtroGravidade; else situation = button.dataset.filtroSituacao;
+            document.querySelectorAll(`[data-filtro-${type}]`).forEach(node => { node.classList.toggle('is-ativo', node === button); node.setAttribute('aria-pressed', String(node === button)); });
+            render(latest);
         });
     });
-
-    document.querySelectorAll('[data-filtro-situacao]').forEach(botao => {
-        botao.addEventListener('click', () => {
-            situacao = botao.dataset.filtroSituacao;
-            ativarChip('[data-filtro-situacao]', botao);
-            aplicarFiltros();
-        });
+    document.getElementById('btnFiltro').addEventListener('click', event => {
+        const panel = document.getElementById('filtroSituacao'); panel.hidden = !panel.hidden;
+        event.currentTarget.setAttribute('aria-expanded', String(!panel.hidden));
     });
-
-    btnFiltro.addEventListener('click', () => {
-        const abrir = painelSituacao.hidden;
-        painelSituacao.hidden = !abrir;
-        btnFiltro.setAttribute('aria-expanded', String(abrir));
-    });
-
-    // Os cartões são links apenas por causa do estilo; não abrem uma tela de detalhe.
-    cartoes.forEach(cartao => cartao.addEventListener('click', event => event.preventDefault()));
-    aplicarFiltros();
-    window.lucide?.createIcons();
+    return monitor('alerts', render);
 }
-
-initAlertasPage();

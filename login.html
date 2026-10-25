@@ -12,10 +12,14 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/login.css">
 
-    <script src="https://unpkg.com/lucide@latest"></script>
-  </head>
 
-  <body class="login-page">
+  <script defer src="assets/vendor/lucide.min.js"></script>
+<script type="module" src="js/app.js"></script>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+</head>
+
+  <body class="login-page" data-ready="false">
     <main class="login">
       <section class="login__apresentacao" aria-label="Apresentação do EcoCycle">
         <div class="login__marca">
@@ -46,7 +50,7 @@
                 placeholder="Nome de usuário"
                 autocomplete="username"
                 required
-            > 
+            >
           </label>
 
           <label class="login__campo">
@@ -61,6 +65,7 @@
           <p class="login__mensagem" id="mensagemLogin" role="status" aria-live="polite"></p>
 
           <button class="login__entrar" type="submit">Entrar</button>
+          <a class="login__esqueci" href="instalar.html">Instalar aplicativo</a>
           <a class="login__esqueci" href="#" id="linkEsqueci">Esqueceu sua senha?</a>
         </form>
       </section>
@@ -68,34 +73,6 @@
       <p class="login__rodape">Tecnologia e sustentabilidade caminhando juntas.</p>
     </main>
 
-    <script>
-      lucide.createIcons();
 
-      const campoSenha = document.getElementById("senha");
-      const botaoMostrarSenha = document.getElementById("mostrarSenha");
-
-      botaoMostrarSenha.addEventListener("click", () => {
-        const vaiMostrar = campoSenha.type === "password";
-        campoSenha.type = vaiMostrar ? "text" : "password";
-        botaoMostrarSenha.setAttribute("aria-label", vaiMostrar ? "Ocultar senha" : "Mostrar senha");
-        botaoMostrarSenha.setAttribute("aria-pressed", String(vaiMostrar));
-        botaoMostrarSenha.innerHTML = vaiMostrar
-          ? '<i data-lucide="eye-off" aria-hidden="true"></i>'
-          : '<i data-lucide="eye" aria-hidden="true"></i>';
-        lucide.createIcons();
-      });
-
-      document.getElementById("formLogin").addEventListener("submit", (event) => {
-        event.preventDefault();
-        document.getElementById("mensagemLogin").textContent =
-          "Formulário preenchido. Conecte esta tela à API de autenticação para validar o acesso.";
-      });
-
-      document.getElementById("linkEsqueci").addEventListener("click", (event) => {
-        event.preventDefault();
-        document.getElementById("mensagemLogin").textContent =
-          "A recuperação de senha poderá ser conectada ao fluxo de autenticação do sistema.";
-      });
-    </script>
   </body>
   </html>
