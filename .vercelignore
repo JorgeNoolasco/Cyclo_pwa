@@ -13,3 +13,9 @@ README.md
 
 node_modulos/
 docs/
+node_modulos/
+node_modules/
+test-results/
+playwright-report/
+.vercel/
+.env

@@ -8,6 +8,11 @@ playwright-report/
 __pycache__/
 .vercel/
 *.zip
-
 node_modulos/
 .env.*
+node_modulos/
+node_modules/
+test-results/
+playwright-report/
+.vercel/
+.env
