@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { request } from '../js/api.js';
 import { adaptLogin } from '../js/adapters.js';
-import { tokenResponse } from './fixtures.mjs';
+import { tokenResponse, backendProduction, backendEquipment, backendAlerts } from './fixtures.mjs';
 import { CONFIG } from '../js/config.js';
 const originalFetch = globalThis.fetch;
 afterEach(() => { globalThis.fetch = originalFetch; });
@@ -15,18 +15,22 @@ test('TokenResponse exige Bearer, acesso liberado e expiração; nunca inventa s
     for (const patch of [{access_token:'inválido'}, {token_type:'Basic'}, {acesso_liberado:false},
         {access_token:'header.e30.signature'}]) assert.throws(() => adaptLogin({...response,...patch}, 'operador'));
 });
-test('dashboard usa endpoint publicado e preserva ausência de estoque e telemetria', async () => {
+test('dashboard agrega endpoints publicados e preserva ausência de estoque e horário', async () => {
+    const calls = [];
     globalThis.fetch = async (url, options) => {
-        assert.equal(url, `${CONFIG.API_URL}/api/producao/dashboard-diario`);
+        calls.push(url);
         assert.equal(options.method, 'GET');
         assert.equal(options.headers.Authorization, 'Bearer teste');
-        return Response.json({balanco_massas_kg:{total_material_entrada:1250}});
+        return Response.json(url.endsWith('/producao') ? backendProduction() : url.endsWith('/equipamentos') ? backendEquipment() : backendAlerts());
     };
     const result = await request('dashboard', {token:'teste'});
-    assert.equal(result.total_processado_kg,null);
+    assert.deepEqual(calls,['/api/producao','/api/equipamentos','/api/alertas'].map(path=>CONFIG.API_URL+path));
+    assert.equal(result.total_processado_kg,750);
     assert.equal(result.estoque.plastico_kg,null);
-    assert.equal(result.esteira,null);
-    assert.deepEqual(result.producao_diaria,[]);
+    assert.equal(result.esteira.ultima_leitura,null);
+    assert.equal(result.esteira.velocidade,4);
+    assert.equal(result.producao_diaria[0].total_kg,750);
+    assert.equal(result.alertas_ativos,1);
 });
 test('resposta de login incompatível produz erro de contrato, não falha de conexão', async () => {
     globalThis.fetch = async () => Response.json({acesso_liberado:true});

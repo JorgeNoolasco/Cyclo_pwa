@@ -21,7 +21,7 @@ const ok=name=>{ results.push(name); console.log('OK:',name); };
 const listen=server=>new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
 const mime={'.js':'text/javascript','.html':'text/html','.css':'text/css','.json':'application/json','.png':'image/png','.svg':'image/svg+xml'};
 (async()=>{
-    const {dashboard,alerts,session,tokenResponse}=await import('./fixtures.mjs');
+    const {dashboard,alerts,session,tokenResponse,backendProduction,backendEquipment,backendAlerts}=await import('./fixtures.mjs');
     let data=dashboard(), events=alerts(), status=200, loginStatus=200, loginPayload=null, delay=0, calls=0, active=0, peak=0;
     let origin;
     const api=http.createServer(async(req,res)=>{
@@ -38,7 +38,9 @@ const mime={'.js':'text/javascript','.html':'text/html','.css':'text/css','.json
         assert.match(req.headers.authorization,/^Bearer fixture\./); calls++;active++;peak=Math.max(peak,active);
         await new Promise(r=>setTimeout(r,delay)); active--;
         res.writeHead(status,{'Content-Type':'application/json'});
-        res.end(JSON.stringify(req.url.startsWith('/api/alertas')?events:data));
+        assert.ok(['/api/producao','/api/equipamentos','/api/alertas'].includes(req.url));
+        res.end(JSON.stringify(req.url === '/api/alertas' ? events : req.url === '/api/producao' ? backendProduction() :
+            {...backendEquipment(),status_esteira:data.status_esteira}));
     });
     await listen(api);const apiOrigin=`http://127.0.0.1:${api.address().port}`;
     const headers=JSON.parse(await fs.readFile(path.join(root,'vercel.json'))).headers[0].headers;
@@ -84,17 +86,17 @@ const mime={'.js':'text/javascript','.html':'text/html','.css':'text/css','.json
         ok('retorno ao portal web usa navegação externa em mobile e desktop');
         loginStatus=401;await page.locator('#nome').fill('invalid');await page.locator('#senha').fill('invalid');await page.locator('[type=submit]').click();await text('#mensagemLogin','inválidas');assert.equal(await page.locator('#senha').inputValue(),'');ok('login inválido e senha removida');
         loginStatus=200;await signIn();await text('#nomeUsuario','fixture');ok('login HTTP e dashboard v1.1, Bearer e CORS da fixture');
-        assert.match(await page.locator('[data-campo="plastico"]').innerText(),/indisponível/);
-        await page.locator('a[href="esteira.html"]').first().click();await text('#textoEsteira','Ligada');
-        for(const [state,label] of [['PARADA','Parada'],['EMERGENCIA','Emergência'],['DESLIGADA','Desligada']]){
+        await text('[data-campo="plastico"]','0,5');
+        await page.locator('a[href="esteira.html"]').first().click();await text('#textoEsteira','LIGADA');
+        await text('[data-campo="velocidade"]','4');
+        await text('#badgeEsteira','Sem horário');
+        for(const [state,label] of [['ESTEIRA DESLIGADA','ESTEIRA DESLIGADA'],['TRAVADA','TRAVADA'],['DESLIGADA','DESLIGADA']]){
             data.status_esteira=state;await page.locator('#btnAtualizar').click();await text('#textoEsteira',label);
         }
-        data.ultima_leitura=new Date(Date.now()-60000).toISOString();await page.locator('#btnAtualizar').click();await text('#textoEsteira','Sem comunicação');
-        data=dashboard();await page.locator('#btnAtualizar').click();await text('#textoEsteira','Ligada');
-        await page.clock.install();await page.clock.fastForward(31000);await text('#textoEsteira','Sem comunicação');await page.clock.setSystemTime(new Date());await page.clock.resume();
-        data=dashboard();await page.locator('#btnAtualizar').click();await text('#textoEsteira','Ligada');ok('navegação mantém sessão; estados e envelhecimento da leitura');
+        data=dashboard();await page.locator('#btnAtualizar').click();await text('#textoEsteira','LIGADA');
+        await text('#avisoAntigo','não informa o horário');ok('equipamento real: estado, km/h e ausência explícita de timestamp');
         await context.setOffline(true);await text('#textoEsteira','Sem comunicação');assert.ok(await page.locator('#avisoOffline').evaluate(n=>n.classList.contains('is-visivel')));
-        await context.setOffline(false);await text('#textoEsteira','Ligada');ok('offline e reconexão automática');
+        await context.setOffline(false);await text('#textoEsteira','LIGADA');ok('offline e reconexão automática');
         status=403;await page.locator('#btnAtualizar').click();await text('#avisoAntigo','permissão');await text('[data-campo="temperatura"]','indisponível');ok('403 remove dados privados da consulta negada');
         status=200;await go('alertas');await page.locator('.alerta').waitFor();await text('.alerta','Gravidade indisponível');
         events=[{...alerts()[0],codigo_equipamento:'<img src=x onerror=alert(1)>'}];await page.locator('#btnAtualizar').click();await text('.alerta__meta','<img');assert.equal(await page.locator('.alerta img').count(),0);
@@ -104,8 +106,13 @@ const mime={'.js':'text/javascript','.html':'text/html','.css':'text/css','.json
         await page.locator('[data-filtro-gravidade="todas"]').click();await page.locator('#btnFiltro').click();
         await page.locator('[data-filtro-situacao="resolvido"]').click();assert.equal(await page.locator('.alerta').count(),1);
         await page.locator('[data-filtro-situacao="todos"]').click();
-        events=[];await page.locator('#btnAtualizar').click();await text('#mensagemVazia','Nenhum alerta');ok('alertas reais ao cliente: vazio, campos opcionais e XSS como texto');
-        await go('producao');await text('[data-campo="estoquePlastico"]','0,5');ok('estoque do dashboard e produção diária sem endpoint inventado');
+        events=backendAlerts();await page.locator('#btnAtualizar').click();await text('.alerta__titulo','Registro de alerta');await text('.alerta__meta','Data indisponível');
+        assert.equal(await page.locator('.alerta').getAttribute('data-id'),null);
+        events={alertas:[]};await page.locator('#btnAtualizar').click();await text('#mensagemVazia','Nenhum alerta');ok('alertas: envelope real, campos ausentes, filtros e XSS como texto');
+        await go('producao');await text('[data-campo="estoquePlastico"]','indisponível');
+        await text('[data-campo="producaoDiaria"]','0,8');
+        await page.locator('#selectPeriodo').selectOption('mes');await text('[data-campo="producaoMensal"]','0,8');
+        ok('produção por dia e mês; estoque ausente não é fabricado');
         await page.evaluate(()=>navigator.serviceWorker.ready);await page.waitForFunction(()=>navigator.serviceWorker.controller);
         const cached=await page.evaluate(async()=> (await Promise.all((await caches.keys()).map(async k=>(await(await caches.open(k)).keys()).map(r=>r.url)))).flat());
         assert.ok(cached.length>25);assert.ok(cached.every(u=>!u.includes('/api/')));

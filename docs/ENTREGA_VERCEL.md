@@ -1,3 +1,5 @@
+﻿> Revisão posterior: consulte [ENDPOINTS_REAIS.md](ENDPOINTS_REAIS.md). O backend local já foi analisado e os envelopes de produção, equipamentos e alertas foram adaptados. Este documento registra a etapa anterior.
+
 # Relatório de entrega — 26/10/2026
 
 ## Resultado
@@ -79,3 +81,4 @@ Evidências locais: `test-results/browser.json`, `test-results/production-audit.
 4. Homologar login e consultas com conta autorizada. O payload JWT é lido para expiração, não validado criptograficamente no navegador; a API deve validar assinatura e permissões.
 5. Confirmar fonte de dados operacionais: a descrição atual do OpenAPI ainda declara simulação em memória. Não houve consulta autenticada que comprove dados reais.
 6. Publicar o PWA após essas correções e validar instalação em dispositivos físicos. Nenhum deployment foi realizado nesta tarefa.
+

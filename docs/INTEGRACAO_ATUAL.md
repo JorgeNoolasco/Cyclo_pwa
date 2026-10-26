@@ -1,3 +1,5 @@
+﻿> Revisão posterior: consulte [ENDPOINTS_REAIS.md](ENDPOINTS_REAIS.md). O backend local já foi analisado e os envelopes de produção, equipamentos e alertas foram adaptados. Este documento registra a etapa anterior.
+
 # Integração publicada — 26/10/2026
 
 Esta revisão substitui as instruções operacionais de INTEGRACAO_API.md, mantido como registro histórico.
@@ -42,3 +44,4 @@ No projeto **CYCLO**, configurar `API_URL` e `WEB_URL` conforme README, executar
 ## Homologação pendente
 
 Após corrigir CORS, repetir `node tests/production-audit.mjs`, fornecendo `PWA_ORIGIN` para incluir a origem real. Em seguida, usar uma conta autorizada no navegador para validar login, expiração e as respostas autenticadas. Os testes automatizados locais usam fixtures explicitamente separadas e não atestam a existência de dados reais no backend. A própria descrição do OpenAPI declara dados simulados em memória; a fonte operacional deve ser confirmada pela equipe responsável.
+

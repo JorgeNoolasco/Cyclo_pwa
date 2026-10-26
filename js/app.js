@@ -10,10 +10,10 @@ import { mount as login } from './login-page.js';
 import { mount as menu } from './menu-page.js';
 
 // HTMLs existentes são templates públicos; JWT e dados ficam no mesmo documento.
-const mounts = { login, dashboard, esteira, producao, alertas, menu, instalar: () => {}, indisponivel: () => {} };
+const mounts = { login, dashboard, esteira, producao, alertas, menu, instalar: () => { }, indisponivel: () => { } };
 const publicPages = new Set(['login', 'instalar', 'indisponivel']);
 const templates = new Map();
-let dispose = () => {}, routeGeneration = 0, routeController, reason = '';
+let dispose = () => { }, routeGeneration = 0, routeController, reason = '';
 const pageName = () => location.pathname.split('/').pop().replace('.html', '') || 'login';
 /**
  * Guarda uma cópia pública do template sem scripts, com título e estilos necessários.
@@ -24,8 +24,10 @@ const pageName = () => location.pathname.split('/').pop().replace('.html', '') |
 function remember(name, doc) {
     const body = doc.body.cloneNode(true);
     body.querySelectorAll('script').forEach(node => node.remove());
-    templates.set(name, { body, title: doc.title,
-        styles: [...doc.querySelectorAll('link[rel="stylesheet"]')].map(node => node.getAttribute('href')) });
+    templates.set(name, {
+        body, title: doc.title,
+        styles: [...doc.querySelectorAll('link[rel="stylesheet"]')].map(node => node.getAttribute('href'))
+    });
 }
 remember(pageName(), document);
 /**
@@ -40,7 +42,7 @@ export async function navigate(name, replace = false) {
     const generation = ++routeGeneration;
     routeController?.abort(); routeController = new AbortController();
     const controller = routeController;
-    dispose(); dispose = () => {};
+    dispose(); dispose = () => { };
     // Limpa antes de qualquer await: logout não deixa informação no DOM.
     document.body.replaceChildren(); document.body.dataset.ready = 'false';
     let timer;
@@ -68,7 +70,7 @@ export async function navigate(name, replace = false) {
         const greeting = document.getElementById('nomeUsuario');
         if (greeting) greeting.textContent = getSession()?.nome?.split(' ')[0] || 'usuário';
         history[replace ? 'replaceState' : 'pushState']({}, '', `${name}.html`);
-        dispose = mounts[name]({ navigate, reason }) || (() => {});
+        dispose = mounts[name]({ navigate, reason }) || (() => { });
         if (CONFIG.USE_MOCK && ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)) {
             const notice = document.createElement('p');
             notice.className = 'aviso-conexao is-visivel'; notice.setAttribute('role', 'status');

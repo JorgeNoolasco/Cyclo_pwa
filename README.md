@@ -2,7 +2,7 @@
 
 Aplicativo estático em HTML, CSS e JavaScript nativos para consulta operacional. A arquitetura e os estilos foram preservados.
 
-**Estado em 26/10/2026:** cliente configurado para os serviços oficiais da Vercel. A integração operacional ainda depende de CORS no backend, de uma conta autorizada e de contratos compatíveis para os indicadores e alertas. Nenhum deploy foi realizado.
+**Estado em 26/10/2026 — revisão dos endpoints reais:** cliente adaptado aos envelopes e campos do código backend fornecido. Produção, equipamentos e alertas são interpretados pelo PWA. A homologação de produção ainda depende de CORS e de uma conta autorizada. Nenhum deploy foi realizado. Consulte o [mapeamento completo](docs/ENDPOINTS_REAIS.md).
 
 ## Executar e testar
 
@@ -52,12 +52,14 @@ O PWA não compartilha sessão com o portal. O token permanece somente em memór
 | Operação | Contrato publicado |
 | --- | --- |
 | Login | POST /api/login, JSON {usuario, senha}; TokenResponse com access_token, token_type, perfil e acesso_liberado |
-| Dashboard | GET /api/producao/dashboard-diario, com Authorization: Bearer |
+| Dashboard | Agrega GET /api/producao, /api/equipamentos e /api/alertas, com Authorization: Bearer |
+| Produção | GET /api/producao → registros_producao; filtros de dia/semana/mês locais |
+| Esteira | GET /api/equipamentos → objeto de equipamento; velocidade em km/h |
 | Alertas | GET /api/alertas, com Authorization: Bearer |
 
 A API centraliza timeout de 10 segundos, cancelamento, erros HTTP, JSON e validação. Usa credentials=omit, cache=no-store e bloqueia redirects. 401 encerra a sessão; 403 remove dados da consulta negada. Não há PUT, PATCH ou DELETE no escopo funcional deste PWA.
 
-**Limites dos dados:** o dashboard publicado apresenta balanço de massas, que não equivale ao contrato de total processado, saldo de estoque e séries por material do PWA. Esses campos permanecem indisponíveis; não há zeros fictícios, conversão arbitrária ou criação de datas. Os adaptadores v1.1 foram preservados para respostas compatíveis. O OpenAPI de alertas não especifica o esquema da resposta; sem amostra autorizada, formatos desconhecidos são rejeitados.
+**Conversões:** a soma de quantidade_saida_kg é exibida como massa produzida. tipo_material ou id_material identifica os materiais; data_inicio define o dia civil, conforme o agrupamento do backend. Os filtros mensais são calculados sobre a lista completa, sem usar o filtro mensal defeituoso do servidor. Não são criados dias sem registros. Alertas lê {usuario_responsavel, alertas}, inclusive quando alertas é objeto único; concluido define a resolução. Identificador, data, tipo e prioridade ausentes continuam indisponíveis. Equipamentos preserva estado e medições, mas sinaliza ausência de horário de leitura. Estoque não é derivado de produção e permanece indisponível.
 
 ## Pendências do backend
 
@@ -65,11 +67,12 @@ A auditoria de 26/10/2026 encontrou raiz e OpenAPI com HTTP 200, consultas prote
 
 A equipe do backend deve configurar CORS para https://eco-cycle-platform-frontend.vercel.app e para a **origem real do CYCLO PWA** (não informada nesta tarefa), aceitar GET/POST e preflight OPTIONS, permitir Authorization e Content-Type e aplicar esses headers também em respostas de erro. Não é necessário permitir cookies: este cliente usa Bearer e credentials=omit.
 
-Também precisa fornecer campos operacionais compatíveis, formalizar o esquema de alertas e disponibilizar conta de homologação. O código backend não está no workspace; o endereço GitHub histórico retornou 404. Não foram alterados outros repositórios ou configurações remotas.
+Ainda faltam endpoint de estoque, timestamp da leitura e dados de perfil completo/recuperação de senha. O backend foi consultado na pasta vizinha EcoCycle_platform_backend, sem alterações. Não foram usadas credenciais demonstrativas encontradas no código para acessar produção. Não foram alterados outros repositórios ou configurações remotas.
 
 ## Documentação e evidências
 
-- [Relatório desta entrega, arquivos e resultados](docs/ENTREGA_VERCEL.md).
+- [Relatório da adaptação aos endpoints reais, arquivos e resultados](docs/ENDPOINTS_REAIS.md).
+- [Relatório da preparação anterior para Vercel](docs/ENTREGA_VERCEL.md).
 - [Contrato atual e configuração CORS sugerida](docs/INTEGRACAO_ATUAL.md).
 - Os documentos DIAGNOSTICO.md, INTEGRACAO_API.md, SEGURANCA.md e TESTES.md contêm evidências históricas de 25/10/2026; seus avisos apontam para esta revisão.
 - Código próprio comentado em português brasileiro; dependências, imagens binárias e artefatos gerados não foram comentados.

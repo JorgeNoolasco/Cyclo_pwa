@@ -22,12 +22,12 @@ async function inspect(path, options = {}) {
 }
 await inspect('/');
 await inspect('/openapi.json');
-await inspect('/api/producao/dashboard-diario');
+await inspect('/api/producao');
+await inspect('/api/equipamentos');
 await inspect('/api/alertas');
-// Corpo vazio verifica a validação da rota sem tentar autenticar uma conta real.
-await inspect('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+// A investigação atual usa somente GET/OPTIONS, sem tentativa de login em produção.
 for (const origin of new Set([CONFIG.WEB_URL,process.env.PWA_ORIGIN].filter(Boolean))) {
-    for (const [path,method] of [['/api/login','POST'],['/api/producao/dashboard-diario','GET'],['/api/alertas','GET']]) {
+    for (const [path,method] of [['/api/login','POST'],['/api/producao','GET'],['/api/equipamentos','GET'],['/api/alertas','GET']]) {
         await inspect(path,{method:'OPTIONS',headers:{Origin:origin,'Access-Control-Request-Method':method,
             'Access-Control-Request-Headers':'authorization,content-type'}});
     }

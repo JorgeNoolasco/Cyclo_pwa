@@ -14,21 +14,25 @@ export function mount() {
  * @param {object} state - Estado publicado pelo monitor.
  * @returns {void}
  */
-function render(state) {
+    function render(state) {
         latest = state;
         const rows = state.data;
         list.replaceChildren();
         const visible = (rows || []).filter(row => (severity === 'todas' || row.prioridade?.toLowerCase() === severity) &&
             (situation === 'todos' || row.resolvido === (situation === 'resolvido')));
-        visible.sort((a,b) => Date.parse(b.data_hora) - Date.parse(a.data_hora)).forEach(row => {
+        visible.sort((a, b) => Date.parse(b.data_hora) - Date.parse(a.data_hora)).forEach(row => {
             const level = row.prioridade?.toLowerCase() || 'indisponivel';
-            const card = element('article', `card alerta alerta--${level}`); card.dataset.id = String(row.id);
+            const card = element('article', `card alerta alerta--${level}`);
+            if (row.id !== null) card.dataset.id = String(row.id);
             const icon = element('div', 'alerta__icone');
             const glyph = element('i', 'icon'); glyph.dataset.lucide = 'triangle-alert'; icon.append(glyph);
             const body = element('div', 'alerta__corpo');
-            const meta = element('p', 'alerta__meta', `${row.equipamento} · `);
-            const time = element('time', '', dateTime(row.data_hora)); time.dateTime = row.data_hora; meta.append(time);
-            body.append(element('h2', 'alerta__titulo', titles[row.tipo]), meta);
+            const meta = element('p', 'alerta__meta', `${row.equipamento || 'Equipamento não informado'} · `);
+            // Datas sem fuso são exibidas como fornecidas, sem assumir o fuso do dispositivo.
+            const time = element('time', '', row.data_hora_texto ? `${row.data_hora_texto.replace('T', ' ')} (fuso não informado)` : dateTime(row.data_hora));
+            if (row.data_hora) time.dateTime = row.data_hora;
+            meta.append(time);
+            body.append(element('h2', 'alerta__titulo', row.mensagem || titles[row.tipo] || 'Registro de alerta'), meta);
             const badges = element('div', 'alerta__badges');
             badges.append(element('span', `badge badge--${level}`, row.prioridade || 'Gravidade indisponível'),
                 element('span', `badge badge--${row.resolvido ? 'resolvido' : 'ativo'}`, row.resolvido ? 'Resolvido' : 'Ativo'));

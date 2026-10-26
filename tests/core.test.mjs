@@ -30,7 +30,7 @@ test('sem token e escritas operacionais bloqueadas antes de fetch', async () => 
 });
 test('Bearer e filtro dos alertas, array vazio', async () => {
     globalThis.fetch = async (url, options) => {
-        assert.ok(url.endsWith('/api/alertas?ativos=true'));
+        assert.ok(url.endsWith('/api/alertas'));
         assert.equal(options.headers.Authorization,'Bearer fixture'); return Response.json([]);
     };
     assert.deepEqual(await request('alerts',{token:'fixture'}), []);
