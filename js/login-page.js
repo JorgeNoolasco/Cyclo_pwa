@@ -1,6 +1,14 @@
+/** @file Liga formulário à autenticação, limpa a senha e cancela tentativas ao abandonar a tela. */
 import { login, logout } from './auth.js';
 import { ApiError } from './api.js';
+import { CONFIG } from './config.js';
+/**
+ * Monta a tela no template atual. Liga formulário à autenticação, limpa a senha e cancela tentativas ao abandonar a tela.
+ * @param {object} options - navigate para trocar de rota e reason para explicar o encerramento da sessão.
+ * @returns {Function} Rotina de limpeza chamada pelo roteador ao sair da tela.
+ */
 export function mount({ navigate, reason }) {
+    document.getElementById('voltarSistemaWeb').href = CONFIG.WEB_URL;
     const form = document.getElementById('formLogin');
     const password = document.getElementById('senha');
     const message = document.getElementById('mensagemLogin');

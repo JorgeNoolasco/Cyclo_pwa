@@ -1,13 +1,24 @@
+/** @file Coordena polling, visibilidade, reconexão e descarte de dados privados ao desmontar uma tela. */
 import { CONFIG } from './config.js';
 import { request, ApiError } from './api.js';
 import { getSession, logout } from './auth.js';
 
 // Um monitor por tela. Nenhum dado privado sobrevive à desmontagem.
+/**
+ * Inicia consultas serializadas; pausa em aba oculta e encerra sessão em HTTP 401.
+ * @param {string} kind - dashboard ou alerts.
+ * @param {Function} render - Recebe data, error, busy, consultedAt e stale; 403 elimina dados anteriores.
+ * @returns {Function} Limpeza que aborta rede, listeners, intervalos e referências privadas.
+ */
 export function monitor(kind, render) {
     const listeners = new AbortController();
     let controller, generation = 0, stopped = false;
     let state = { data: null, error: '', busy: false, consultedAt: null };
-    function paint() {
+    /**
+ * Calcula obsolescência pelo horário da consulta e publica cópia do estado; oculta contadores não confiáveis.
+ * @returns {void}
+ */
+function paint() {
         if (!stopped) render({ ...state, stale: !navigator.onLine || Boolean(state.error) ||
             !state.consultedAt || Date.now() - Date.parse(state.consultedAt) > CONFIG.STALE_AFTER });
         if (!stopped && kind === 'dashboard') document.querySelectorAll('.badge-contador').forEach(node => {
@@ -16,8 +27,16 @@ export function monitor(kind, render) {
             node.textContent = Number.isSafeInteger(count) ? String(count) : '';
         });
     }
-    function cancel() { generation++; controller?.abort(); controller = null; state.busy = false; }
-    async function refresh() {
+    /**
+ * Invalida respostas pendentes antes de abortar a rede, impedindo atualização após troca de tela.
+ * @returns {void}
+ */
+function cancel() { generation++; controller?.abort(); controller = null; state.busy = false; }
+    /**
+ * Consulta somente com sessão, aba visível e sem outra requisição; diferencia expiração, proibição e falha transitória.
+ * @returns {Promise<void>} Erros controlados são refletidos no estado da tela.
+ */
+async function refresh() {
         if (stopped || state.busy || document.visibilityState !== 'visible') return;
         const session = getSession();
         if (!session) return;

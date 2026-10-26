@@ -1,7 +1,12 @@
+/** @file Gerencia instalação por gesto do usuário e registra cache estático somente em contexto seguro. */
 let installPrompt = null;
 let installed = matchMedia('(display-mode: standalone)').matches || Boolean(navigator.standalone);
 window.addEventListener('beforeinstallprompt', event => { event.preventDefault(); installPrompt = event; });
 window.addEventListener('appinstalled', () => { installed = true; installPrompt = null; bindInstall(); });
+/**
+ * Vincula o botão do template atual ao prompt nativo; orienta instalação manual quando indisponível.
+ * @returns {void} A recusa ou falha de instalação mantém a aplicação web utilizável.
+ */
 export function bindInstall() {
     const button = document.querySelector('[data-install]');
     if (!button) return;

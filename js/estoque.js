@@ -1,7 +1,12 @@
+/** @file Apresenta saldos e produção diária em toneladas, com filtros locais e gráficos SVG acessíveis. */
 import { CONFIG } from './config.js';
 import { setText, setTime, tonnes, number } from './ui.js';
 import { monitor } from './monitor.js';
 
+/**
+ * Monta a tela no template atual. Apresenta saldos e produção diária em toneladas, com filtros locais e gráficos SVG acessíveis.
+ * @returns {Function} Rotina de limpeza chamada pelo roteador ao sair da tela.
+ */
 export function mount() {
 
 const $ = id => document.getElementById(id);
@@ -12,6 +17,11 @@ let consultando = false;
 
 const online = () => navigator.onLine;
 
+/**
+ * Desenha produção diária em toneladas, com escala mínima de cinco e espaço uniforme por registro.
+ * @param {Array<object>} rows - Registros diários já selecionados e ordenados.
+ * @returns {void}
+ */
 function atualizarGrafico(rows) {
     const svg = document.querySelector('.grafico .linha');
     if (!svg) return;
@@ -80,6 +90,10 @@ function atualizarGrafico(rows) {
     svg.setAttribute('aria-label', `Produção dos últimos ${rows.length} dias, em toneladas.`);
 }
 
+/**
+ * Calcula participação de cada material apenas com ambos os saldos válidos e total positivo.
+ * @returns {void}
+ */
 function atualizarEstoque() {
     const estoque = dataAtual?.estoque;
     const plastico = estoque?.plastico_kg;
@@ -108,6 +122,10 @@ function atualizarEstoque() {
     });
 }
 
+/**
+ * Filtra o período, soma massas reais e atualiza gráfico e avisos sem criar dias inexistentes.
+ * @returns {void}
+ */
 function atualizarTela() {
     const rows = Array.isArray(dataAtual?.producao_diaria) ? [...dataAtual.producao_diaria].sort((a, b) => a.data.localeCompare(b.data)) : [];
     const periodo = $('selectPeriodo')?.value || 'hoje';

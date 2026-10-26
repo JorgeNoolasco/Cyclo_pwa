@@ -1,10 +1,20 @@
+/** @file Renderiza alertas com filtros locais de situação e gravidade, sem inserir HTML recebido da API. */
 import { monitor } from './monitor.js';
 import { element, dateTime, setText, setTime } from './ui.js';
 const titles = { TEMPERATURA_ALTA: 'Temperatura elevada na esteira', PARADA: 'Esteira parada', EMERGENCIA: 'Emergência na esteira' };
+/**
+ * Monta a tela no template atual. Renderiza alertas com filtros locais de situação e gravidade, sem inserir HTML recebido da API.
+ * @returns {Function} Rotina de limpeza chamada pelo roteador ao sair da tela.
+ */
 export function mount() {
     let severity = 'todas', situation = 'todos', latest;
     const list = document.getElementById('listaAlertas');
-    function render(state) {
+    /**
+ * Aplica filtros locais e ordenação decrescente de data; mensagens distinguem consulta ausente e lista vazia.
+ * @param {object} state - Estado publicado pelo monitor.
+ * @returns {void}
+ */
+function render(state) {
         latest = state;
         const rows = state.data;
         list.replaceChildren();

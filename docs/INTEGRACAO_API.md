@@ -1,3 +1,5 @@
+﻿> Registro histórico de 25/10/2026. Para configuração, contratos e resultados atuais, consulte [INTEGRACAO_ATUAL.md](INTEGRACAO_ATUAL.md) e [ENTREGA_VERCEL.md](ENTREGA_VERCEL.md). Afirmações sobre ausência de JWT, rotas ou URLs abaixo descrevem a auditoria antiga.
+
 # Integração com a API
 
 ## Estado da entrega
@@ -75,3 +77,4 @@ Definir `VITE_CYCLO_URL` no ambiente de build: URL raiz pública HTTPS do CYCLO,
 Arquivos do patch: `src/shared/layout.js`, `vite.config.js`, `src/features/install/install.html` e `install.js`. Reutiliza layout e classes existentes. A rota segue o Vite multipágina: `/src/features/install/install.html`.
 
 Fluxo: menu Web → página EcoCycle Mobile → botão → origem CYCLO `/instalar.html` → instalação nativa ou instruções. O site Web não tenta disparar um prompt de outra origem. O patch não foi enviado, aplicado ao repositório remoto, publicado nem testado no build completo do Web. URL de produção não fornecida.
+

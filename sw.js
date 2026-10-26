@@ -1,5 +1,6 @@
+/** @file Cache de recursos públicos por lista permitida; nunca intercepta respostas autenticadas ou API. */
 // Incremente a versão quando os arquivos estáticos forem alterados.
-const CACHE = 'ecocycle-static-v4';
+const CACHE = 'ecocycle-static-v5';
 const FILES = [
     './', './index.html', './login.html', './dashboard.html', './esteira.html', './alertas.html', './producao.html', './menu.html',
     './css/style.css', './css/login.css', './css/esteira.css', './css/alertas.css', './css/producao.css', './css/menu.css',

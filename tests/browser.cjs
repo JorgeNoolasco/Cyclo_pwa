@@ -1,9 +1,13 @@
+/** @file Executa fluxos de interface contra servidor HTTP isolado; não comprova integração com produção. */
 // Servidores de fixtures exclusivos de teste; nunca publicados nem usados pelo app.
 const http = require('node:http');
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const assert = require('node:assert/strict');
 const { execFileSync } = require('node:child_process');
+// A comparação histórica exige Git instalado; os demais fluxos são independentes.
+let hasGit = true;
+try { execFileSync('git', ['--version'], { stdio: 'ignore' }); } catch { hasGit = false; }
 let chromium;
 try { ({chromium}=require('playwright')); } catch {
     process.env.NODE_PATH = [path.resolve(__dirname,'../node_modulos'),process.env.NODE_PATH].filter(Boolean).join(path.delimiter);
@@ -11,11 +15,13 @@ try { ({chromium}=require('playwright')); } catch {
     ({chromium}=require('playwright'));
 }
 const root=path.resolve(__dirname,'..'), results=[], errors=[];
+// TEST_ARTIFACT=1 exercita os arquivos de dist gerados para publicação.
+const publicRoot = process.env.TEST_ARTIFACT === '1' ? path.join(root,'dist') : root;
 const ok=name=>{ results.push(name); console.log('OK:',name); };
 const listen=server=>new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
 const mime={'.js':'text/javascript','.html':'text/html','.css':'text/css','.json':'application/json','.png':'image/png','.svg':'image/svg+xml'};
 (async()=>{
-    const {dashboard,alerts,session}=await import('./fixtures.mjs');
+    const {dashboard,alerts,session,tokenResponse}=await import('./fixtures.mjs');
     let data=dashboard(), events=alerts(), status=200, loginStatus=200, loginPayload=null, delay=0, calls=0, active=0, peak=0;
     let origin;
     const api=http.createServer(async(req,res)=>{
@@ -24,12 +30,12 @@ const mime={'.js':'text/javascript','.html':'text/html','.css':'text/css','.json
         res.setHeader('Access-Control-Allow-Methods','GET, POST, OPTIONS');
         res.setHeader('Cache-Control','no-store');
         if(req.method==='OPTIONS'){res.writeHead(204);res.end();return;}
-        if(req.url==='/api/auth/login'){
+        if(req.url==='/api/login'){
             let body='';for await(const part of req) body+=part;
-            assert.deepEqual(Object.keys(JSON.parse(body)).sort(),['login','senha']);
-            res.writeHead(loginStatus,{'Content-Type':'application/json'});res.end(JSON.stringify(loginPayload||session()));return;
+            assert.deepEqual(Object.keys(JSON.parse(body)).sort(),['senha','usuario']);
+            res.writeHead(loginStatus,{'Content-Type':'application/json'});res.end(JSON.stringify(tokenResponse(loginPayload||session())));return;
         }
-        assert.equal(req.headers.authorization,'Bearer fixture-token'); calls++;active++;peak=Math.max(peak,active);
+        assert.match(req.headers.authorization,/^Bearer fixture\./); calls++;active++;peak=Math.max(peak,active);
         await new Promise(r=>setTimeout(r,delay)); active--;
         res.writeHead(status,{'Content-Type':'application/json'});
         res.end(JSON.stringify(req.url.startsWith('/api/alertas')?events:data));
@@ -44,9 +50,9 @@ const mime={'.js':'text/javascript','.html':'text/html','.css':'text/css','.json
             if(!/^\/(?:[\w-]+\.html|manifest\.json|sw\.js|js\/[\w-]+\.js|css\/[\w-]+\.css|assets\/(?:icons|vendor)\/[\w.-]+)$/.test(pathname)) throw new Error('Not public');
             let content;
             if(baseline && !pathname.includes('/vendor/')) content=execFileSync('git',['show',`HEAD:${pathname.slice(1)}`],{cwd:root,encoding:'utf8'});
-            else content=await fs.readFile(path.join(root,pathname));
+            else content=await fs.readFile(path.join(publicRoot,pathname));
             if(baseline && pathname.endsWith('.html')) content=content.replace('https://unpkg.com/lucide@latest','/assets/vendor/lucide.min.js');
-            if(pathname==='/js/config.js' && !baseline) content=content.toString().replace('http://127.0.0.1:8000',apiOrigin);
+            if(pathname==='/js/config.js' && !baseline) content=content.toString().replace('https://eco-cycle-platform-backend.vercel.app',apiOrigin);
             for(const header of headers) {
                 let value=header.value;
                 if(header.key==='Content-Security-Policy') value=value.replace("connect-src 'self'",`connect-src 'self' ${apiOrigin}`).replace('; upgrade-insecure-requests','');
@@ -66,8 +72,18 @@ const mime={'.js':'text/javascript','.html':'text/html','.css':'text/css','.json
         const signIn=async()=>{await page.locator('#nome').fill('fixture');await page.locator('#senha').fill('fixture');await page.locator('[type=submit]').click();await text('[data-campo="toneladas"]','0,8');};
         const go=async name=>{await page.evaluate(name=>import('./js/app.js').then(m=>m.navigate(name)),name);await page.waitForFunction(()=>document.body.dataset.ready==='true');};
         await page.goto(origin+'/dashboard.html');await page.locator('#nome').waitFor();assert.ok(page.url().endsWith('login.html'));ok('URL protegida sem sessão volta ao login');
+        // Intercepta somente o destino externo para testar navegação sem depender do portal.
+        await context.route('https://eco-cycle-platform-frontend.vercel.app/**', route => route.fulfill({body:'Portal web',contentType:'text/html'}));
+        for (const width of [390,1440]) {
+            await page.setViewportSize({width,height:900});
+            await page.locator('#voltarSistemaWeb').click();
+            await page.waitForURL('https://eco-cycle-platform-frontend.vercel.app/');
+            await page.goto(origin+'/login.html');await page.locator('#nome').waitFor();
+        }
+        await page.setViewportSize({width:390,height:844});
+        ok('retorno ao portal web usa navegação externa em mobile e desktop');
         loginStatus=401;await page.locator('#nome').fill('invalid');await page.locator('#senha').fill('invalid');await page.locator('[type=submit]').click();await text('#mensagemLogin','inválidas');assert.equal(await page.locator('#senha').inputValue(),'');ok('login inválido e senha removida');
-        loginStatus=200;await signIn();await text('#nomeUsuario','Pessoa');ok('login HTTP e dashboard v1.1, Bearer e CORS da fixture');
+        loginStatus=200;await signIn();await text('#nomeUsuario','fixture');ok('login HTTP e dashboard v1.1, Bearer e CORS da fixture');
         assert.match(await page.locator('[data-campo="plastico"]').innerText(),/indisponível/);
         await page.locator('a[href="esteira.html"]').first().click();await text('#textoEsteira','Ligada');
         for(const [state,label] of [['PARADA','Parada'],['EMERGENCIA','Emergência'],['DESLIGADA','Desligada']]){
@@ -106,11 +122,13 @@ const mime={'.js':'text/javascript','.html':'text/html','.css':'text/css','.json
         await page.evaluate(()=>{delete document.visibilityState;document.dispatchEvent(new Event('visibilitychange'));});
         await page.waitForFunction(()=>!document.getElementById('btnAtualizar').disabled);assert.equal(peak,1);ok('polling suspenso em aba oculta e sem sobreposição');
         // Regressão geométrica dos elementos estruturais, usando HTML/CSS do HEAD.
+        if (hasGit) {
         const baselineContext=await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'block'});
         const baseline=await baselineContext.newPage();await baseline.goto(origin+'/baseline/dashboard.html');
         const selectors=['.app-header','.nav-inferior','.grid-kpi'];
         for(const selector of selectors){const before=await baseline.locator(selector).boundingBox(),after=await page.locator(selector).boundingBox();assert.ok(Math.abs(before.x-after.x)<1&&Math.abs(before.width-after.width)<1,selector);}
         await baseline.screenshot({path:path.join(root,'test-results/baseline-dashboard.png'),fullPage:true});await baselineContext.close();ok('regressão visual: posição/largura de cabeçalho, navegação e grade preservadas');
+        } else console.log('SKIP: comparação geométrica com HEAD requer Git instalado.');
         for(const width of [320,390,768,1440]){
             await page.setViewportSize({width,height:900});
             for(const name of ['dashboard','esteira','alertas','producao','menu']){

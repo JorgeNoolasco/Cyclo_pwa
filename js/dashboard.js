@@ -1,7 +1,12 @@
+/** @file Apresenta indicadores e situação da esteira, sem converter ausência de leitura em sucesso operacional. */
 import { CONFIG } from './config.js';
 import { setText, setTime, tonnes } from './ui.js';
 import { monitor } from './monitor.js';
 
+/**
+ * Monta a tela no template atual. Apresenta indicadores e situação da esteira, sem converter ausência de leitura em sucesso operacional.
+ * @returns {Function} Rotina de limpeza chamada pelo roteador ao sair da tela.
+ */
 export function mount() {
 
 /*
@@ -52,6 +57,10 @@ const dashboardStale = () =>
     Boolean(dashboard?.atualizado_em && isOld(dashboard.atualizado_em));
 
 // Não afirmamos que a esteira está bem quando não temos leitura confiável.
+/**
+ * Determina a apresentação da esteira somente quando conexão, consulta e leitura estão atuais.
+ * @returns {object} Rótulos e classes do estado ou indicação de falta de comunicação.
+ */
 function beltEstado() {
     const belt = dashboard?.esteira;
 
@@ -68,6 +77,10 @@ function beltEstado() {
 
 /* ---------- Desenho da tela ---------- */
 
+/**
+ * Converte kg em toneladas e mantém indicadores ausentes sem valor; esconde variações não fornecidas.
+ * @returns {void}
+ */
 function renderKpis() {
 
     const data = dashboard;
@@ -93,6 +106,10 @@ function renderKpis() {
     }
 }
 
+/**
+ * Aplica rótulos e classes derivados da leitura confiável, sem comandar equipamento.
+ * @returns {void}
+ */
 function renderEsteira() {
     const estado = beltEstado();
 
@@ -102,6 +119,10 @@ function renderEsteira() {
     setText('#badgeEsteira', estado.rotulo);
 }
 
+/**
+ * Exibe horário disponível e bloqueia atualização concorrente ou offline.
+ * @returns {void}
+ */
 function renderAtualizacao() {
     if (dashboard) {
         setTime('#ultimaAtualizacao', dashboard.atualizado_em || consultedAt);
@@ -114,6 +135,10 @@ function renderAtualizacao() {
     $('btnAtualizar').setAttribute('aria-busy', String(busy));
 }
 
+/**
+ * Distingue falta de rede de dados antigos e preserva mensagem de erro controlada.
+ * @returns {void}
+ */
 function renderAvisos() {
     const online = isOnline();
     const stale = dashboardStale();
@@ -126,6 +151,10 @@ function renderAvisos() {
         : avisoAntigoPadrao;
 }
 
+/**
+ * Redesenha indicadores e barras proporcionais ao maior valor real da série em kg.
+ * @returns {void}
+ */
 function render() {
     renderKpis();
     const rows = dashboard?.producao_diaria ?? [];

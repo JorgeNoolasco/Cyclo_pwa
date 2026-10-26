@@ -1,9 +1,14 @@
+/** @file Centraliza endpoints, Bearer, JSON, validação de respostas, cancelamento e timeout; não persiste dados. */
 
 import { CONFIG } from './config.js';
-import { adaptDashboard, adaptAlerts } from './adapters.js';
+import { adaptDashboard, adaptAlerts, adaptLogin } from './adapters.js';
 
 // Erros controlados: o usuário recebe uma mensagem conhecida.
 export class ApiError extends Error {
+    /**
+     * @param {string} message - Mensagem controlada para exibição ao usuário.
+     * @param {number} [status=0] - Código HTTP; zero indica falha sem resposta HTTP.
+     */
     constructor(message, status = 0) {
         super(message);
         this.name = 'ApiError';
@@ -48,6 +53,13 @@ const date = value =>
     Number.isFinite(Date.parse(value)) &&
     new Date(value).toISOString().slice(0, 10) === value;
 
+/**
+ * Valida estrutura, datas, quantidades e unicidade antes de disponibilizar dados às telas.
+ * @param {string} kind - Operação login, dashboard ou alerts.
+ * @param {unknown} raw - JSON recebido, ainda não confiável.
+ * @returns {object|Array|null} Modelo validado para apresentação.
+ * @throws {ApiError} Se o contrato ou algum campo estiver inválido.
+ */
 export function validate(kind, raw) {
     let value;
     try { value = kind === 'dashboard' ? adaptDashboard(raw) : kind === 'alerts' ? adaptAlerts(raw) : raw; }
@@ -59,7 +71,7 @@ export function validate(kind, raw) {
         ['ADMINISTRADOR', 'GERENTE', 'OPERADOR', 'CONSULTA'].includes(value.perfil) && time(value.expira_em);
     if (kind === 'dashboard') {
         const belt = value?.esteira;
-        valid = value === null || (object(value) && quantity(value.total_processado_kg) &&
+        valid = value === null || (object(value) && optionalQuantity(value.total_processado_kg) &&
             (value.atualizado_em == null || time(value.atualizado_em)) &&
             ['plastico_recuperado_kg', 'metal_recuperado_kg'].every(k => optionalQuantity(value[k])) &&
             object(value.estoque) && optionalQuantity(value.estoque.plastico_kg) && optionalQuantity(value.estoque.metal_kg) &&
@@ -82,13 +94,20 @@ export function validate(kind, raw) {
 }
 
 // Apenas estas três operações estão autorizadas pelo módulo da Equipe 06.
+/**
+ * Executa POST /api/login ou GET /api/producao/dashboard-diario e /api/alertas.
+ * @param {string} kind - Operação permitida; não há PUT, PATCH ou DELETE neste cliente.
+ * @param {object} [options] - token Bearer, body {login, senha}, active e signal de cancelamento.
+ * @returns {Promise<object|Array|null>} Resposta adaptada e validada; nunca usa fallback fictício.
+ * @throws {ApiError|DOMException} Erro HTTP, rede, JSON, contrato, timeout ou cancelamento.
+ */
 export async function request(
     kind,
     { token, body, active = true, signal } = {}
 ) {
     const paths = {
-        login: '/api/auth/login',
-        dashboard: '/api/dashboard',
+        login: '/api/login',
+        dashboard: '/api/producao/dashboard-diario',
         alerts: `/api/alertas${active ? '?ativos=true' : ''}`
     };
 
@@ -178,7 +197,7 @@ export async function request(
                     : {})
             },
 
-            body: body ? JSON.stringify(body) : undefined,
+            body: body ? JSON.stringify(kind === 'login' ? { usuario: body.login, senha: body.senha } : body) : undefined,
             signal: controller.signal,
             cache: 'no-store',
             credentials: 'omit',
@@ -202,6 +221,10 @@ export async function request(
             throw new ApiError('A API retornou um JSON inválido.');
         }
 
+        if (kind === 'login') {
+            try { data = adaptLogin(data, body?.login); }
+            catch { throw new ApiError('A API retornou autenticação em formato inválido.'); }
+        }
         return validate(kind, data);
     } catch (error) {
         if (error instanceof ApiError) {

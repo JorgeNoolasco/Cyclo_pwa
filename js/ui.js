@@ -1,3 +1,4 @@
+/** @file Reúne formatação brasileira e criação segura de elementos, incluindo componentes legados. */
 
 /*
  * Funções auxiliares da interface.
@@ -5,6 +6,12 @@
  */
 
 // Cria um elemento HTML.
+/**
+ * @param {string} tag - Tag HTML.
+ * @param {string} [className] - Classes visuais.
+ * @param {string} [text] - Texto tratado como texto, não HTML.
+ * @returns {HTMLElement} Elemento pronto para inserção no DOM.
+ */
 export function element(tag, className = '', text = '') {
     const node = document.createElement(tag);
 
@@ -15,6 +22,7 @@ export function element(tag, className = '', text = '') {
 }
 
 // Formata números no padrão brasileiro.
+/** @param {unknown} value - Quantidade a formatar. @returns {string} Número pt-BR ou travessão se ausente/inválido. */
 export const number = value => {
     const numericValue = Number(value);
 
@@ -29,6 +37,7 @@ export const number = value => {
 };
 
 // Converte quilogramas para toneladas.
+/** @param {unknown} value - Massa em kg. @returns {string} Massa dividida por mil, sem transformar ausência em zero. */
 export const tonnes = value => {
     const numericValue = Number(value);
 
@@ -41,6 +50,7 @@ export const tonnes = value => {
 };
 
 // Formata uma data e hora no padrão brasileiro.
+/** @param {string} value - Data ISO. @returns {string} Data no fuso do dispositivo ou mensagem de indisponibilidade. */
 export const dateTime = value => {
     const timestamp = Date.parse(value);
 
@@ -52,6 +62,12 @@ export const dateTime = value => {
 };
 
 // Atualiza o texto de um elemento existente.
+/**
+ * @param {string} selector - Seletor CSS.
+ * @param {unknown} value - Valor exibido; ausência recebe tratamento visual.
+ * @param {Document|Element} [root] - Raiz da busca.
+ * @returns {boolean} Indica se foi possível atualizar o elemento.
+ */
 export function setText(selector, value, root = document) {
     const node = root.querySelector(selector);
 
@@ -68,6 +84,12 @@ export function setText(selector, value, root = document) {
 }
 
 // Mostra ou esconde um elemento existente.
+/**
+ * @param {string} selector - Seletor CSS.
+ * @param {boolean} visible - Visibilidade desejada.
+ * @param {Document|Element} [root] - Raiz da busca.
+ * @returns {boolean} Indica se foi possível atualizar o elemento.
+ */
 export function setVisible(selector, visible, root = document) {
     const node = root.querySelector(selector);
 
@@ -81,6 +103,12 @@ export function setVisible(selector, visible, root = document) {
 }
 
 // Atualiza o texto e o atributo datetime de um elemento <time>.
+/**
+ * @param {string} selector - Seletor do elemento time.
+ * @param {string} value - Data ISO recebida.
+ * @param {Document|Element} [root] - Raiz da busca.
+ * @returns {boolean} Indica se foi possível atualizar o elemento.
+ */
 export function setTime(selector, value, root = document) {
     const node = root.querySelector(selector);
 
@@ -112,6 +140,10 @@ export function setTime(selector, value, root = document) {
  */
 
 // Cria um ícone usando o arquivo SVG de símbolos.
+/**
+ * @param {string} name - Identificador no sprite SVG local.
+ * @returns {SVGElement} Elemento pronto para inserção no DOM.
+ */
 export function icon(name) {
     const svg = document.createElementNS(
         'http://www.w3.org/2000/svg',
@@ -135,6 +167,11 @@ export function icon(name) {
 }
 
 // Cria um painel com identificação e título.
+/**
+ * @param {string} kicker - Identificação secundária.
+ * @param {string} title - Título textual.
+ * @returns {HTMLElement} Elemento pronto para inserção no DOM.
+ */
 export function panel(kicker, title) {
     const section = element('section', 'panel');
 
@@ -147,6 +184,10 @@ export function panel(kicker, title) {
 }
 
 // Cria uma mensagem para situações sem dados.
+/**
+ * @param {string} [text] - Orientação quando não há dados.
+ * @returns {HTMLElement} Elemento pronto para inserção no DOM.
+ */
 export function empty(text = 'Nenhum dado disponível no momento.') {
     const box = element('div', 'empty');
 
@@ -160,6 +201,10 @@ export function empty(text = 'Nenhum dado disponível no momento.') {
 }
 
 // Cria os cartões de indicadores da estrutura antiga.
+/**
+ * @param {object} [data] - Indicadores do componente legado, em kg.
+ * @returns {HTMLElement} Elemento pronto para inserção no DOM.
+ */
 export function metrics(data = {}) {
     const grid = element('div', 'metrics');
     const estoque = data.estoque ?? {};
@@ -219,6 +264,10 @@ export function metrics(data = {}) {
 }
 
 // Cria o gráfico e a tabela da estrutura antiga.
+/**
+ * @param {object} [data] - Série diária do componente legado, em kg.
+ * @returns {HTMLElement} Elemento pronto para inserção no DOM.
+ */
 export function production(data = {}) {
     const section = panel(
         'VISÃO DA PRODUÇÃO',

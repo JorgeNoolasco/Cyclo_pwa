@@ -1,5 +1,9 @@
 """Auditoria isolada dos routers oficiais, sem banco, deploy ou alteração remota.
 
+Registro histórico de contrato em commit fixo, não um teste do deployment atual.
+Se a fonte pública deixar de existir, HTTP 404 interrompe a auditoria sem alegar
+sucesso. Para a verificação não destrutiva atual, use production-audit.mjs.
+
 Requer fastapi e httpx no ambiente Python. Baixa somente fontes públicas de um
 commit fixo para test-results; não baixa .env, credenciais ou código de banco.
 """

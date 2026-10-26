@@ -1,3 +1,5 @@
+﻿> Registro histórico de 25/10/2026. Para configuração, contratos e resultados atuais, consulte [INTEGRACAO_ATUAL.md](INTEGRACAO_ATUAL.md) e [ENTREGA_VERCEL.md](ENTREGA_VERCEL.md). Afirmações sobre ausência de JWT, rotas ou URLs abaixo descrevem a auditoria antiga.
+
 # Segurança da informação — evidências CID
 
 ## Confidencialidade
@@ -40,3 +42,4 @@ O servidor simples Python não aplica cabeçalhos Vercel. O teste de navegador a
 ## Limites
 
 Não se alega conformidade integral LGPD/OWASP ou segurança absoluta contra XSS. CORS, hash de senhas, RBAC, assinatura/revogação de JWT, logs seguros, rate limiting, banco, backups e disponibilidade do serviço devem ser garantidos e homologados pela equipe backend. Nenhum log do aplicativo inclui token, senha ou conteúdo de resposta privada.
+

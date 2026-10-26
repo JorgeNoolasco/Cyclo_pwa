@@ -1,3 +1,4 @@
+/** @file Navega entre templates públicos no mesmo documento para manter a sessão somente em memória. */
 import { getSession, logout } from './auth.js';
 import { CONFIG } from './config.js';
 import { bindInstall } from './pwa.js';
@@ -14,6 +15,12 @@ const publicPages = new Set(['login', 'instalar', 'indisponivel']);
 const templates = new Map();
 let dispose = () => {}, routeGeneration = 0, routeController, reason = '';
 const pageName = () => location.pathname.split('/').pop().replace('.html', '') || 'login';
+/**
+ * Guarda uma cópia pública do template sem scripts, com título e estilos necessários.
+ * @param {string} name - Nome da rota conhecida.
+ * @param {Document} doc - Documento HTML analisado.
+ * @returns {void}
+ */
 function remember(name, doc) {
     const body = doc.body.cloneNode(true);
     body.querySelectorAll('script').forEach(node => node.remove());
@@ -21,6 +28,12 @@ function remember(name, doc) {
         styles: [...doc.querySelectorAll('link[rel="stylesheet"]')].map(node => node.getAttribute('href')) });
 }
 remember(pageName(), document);
+/**
+ * Carrega template via GET local e monta a tela após verificar a sessão; cancela navegação anterior.
+ * @param {string} name - Nome de rota permitida.
+ * @param {boolean} [replace=false] - Substitui a entrada atual do histórico quando verdadeiro.
+ * @returns {Promise<void>} Falhas de template resultam em uma tela de indisponibilidade.
+ */
 export async function navigate(name, replace = false) {
     if (!Object.hasOwn(mounts, name)) return;
     if (!publicPages.has(name) && !getSession()) name = 'login';

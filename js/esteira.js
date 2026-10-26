@@ -1,7 +1,12 @@
+/** @file Exibe a última leitura disponível; idade, erro e falta de rede tornam o estado não confiável. */
 import { CONFIG } from './config.js';
 import { setText, setTime } from './ui.js';
 import { monitor } from './monitor.js';
 
+/**
+ * Monta a tela no template atual. Exibe a última leitura disponível; idade, erro e falta de rede tornam o estado não confiável.
+ * @returns {Function} Rotina de limpeza chamada pelo roteador ao sair da tela.
+ */
 export function mount() {
 
 const $ = id => document.getElementById(id);
@@ -21,12 +26,20 @@ let consultando = false;
 const online = () => navigator.onLine;
 const dataAntiga = valor => !Number.isFinite(Date.parse(valor)) || Date.parse(valor) > Date.now() + 5000 || Date.now() - Date.parse(valor) > CONFIG.STALE_AFTER;
 
+/**
+ * Rejeita leitura antiga, futura, desconectada ou com erro antes de selecionar um estado visual.
+ * @returns {object} Rótulos e classes de estado.
+ */
 function estadoAtual() {
     const belt = dataAtual?.esteira;
     if (monitorStale || !belt || !online() || erro || belt.conectada === false || dataAntiga(belt.ultima_leitura)) return SEM_COMUNICACAO;
     return ESTADOS[belt.estado] || SEM_COMUNICACAO;
 }
 
+/**
+ * Atualiza medições e avisos; campos não fornecidos continuam indisponíveis e o horário não é inventado.
+ * @returns {void}
+ */
 function atualizarEstado() {
     const estado = estadoAtual();
     const ponto = $('pontoEsteira');

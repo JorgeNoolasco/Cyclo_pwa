@@ -1,3 +1,5 @@
+﻿> Registro histórico de 25/10/2026. Para configuração, contratos e resultados atuais, consulte [INTEGRACAO_ATUAL.md](INTEGRACAO_ATUAL.md) e [ENTREGA_VERCEL.md](ENTREGA_VERCEL.md). Afirmações sobre ausência de JWT, rotas ou URLs abaixo descrevem a auditoria antiga.
+
 # Diagnóstico técnico — 25/10/2026
 
 Auditoria antes da implementação. Branch de trabalho: `feature/ecocycle-api-pwa-security`.
@@ -28,3 +30,4 @@ Auditoria antes da implementação. Branch de trabalho: `feature/ecocycle-api-pw
 - ZIP de diagramas inspecionado quanto ao inventário; não foi usado para inferir rotas ou autorizações.
 
 O código contradizia o README anterior em pontos fundamentais. As alegações antigas de testes e integração foram substituídas por resultados desta revisão. Não houve commit, push ou deploy.
+

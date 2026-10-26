@@ -1,19 +1,20 @@
+/** @file Verifica contratos, erros HTTP, cancelamento e isolamento do cache com fetch controlado. */
 import { test, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 import { request, validate } from '../js/api.js';
-import { dashboard, alerts, session } from './fixtures.mjs';
+import { dashboard, alerts, session, tokenResponse } from './fixtures.mjs';
 const originalFetch = globalThis.fetch;
 globalThis.location = { protocol: 'http:', hostname: '127.0.0.1' };
 afterEach(() => { globalThis.fetch = originalFetch; });
 test('login válido envia contrato, sem cookies, cache ou redirecionamento', async () => {
     globalThis.fetch = async (url, options) => {
-        assert.equal(url, 'http://127.0.0.1:8000/api/auth/login');
+        assert.equal(url, 'https://eco-cycle-platform-backend.vercel.app/api/login');
         assert.equal(options.method, 'POST'); assert.equal(options.cache, 'no-store');
         assert.equal(options.credentials, 'omit'); assert.equal(options.redirect, 'error');
-        assert.deepEqual(JSON.parse(options.body), { login:'teste', senha:'teste' });
-        return Response.json(session());
+        assert.deepEqual(JSON.parse(options.body), { usuario:'teste', senha:'teste' });
+        return Response.json(tokenResponse());
     };
     assert.equal((await request('login', {body:{login:'teste',senha:'teste'}})).perfil, 'CONSULTA');
 });
@@ -72,7 +73,7 @@ test('tipos, datas, estados, duplicidades e payload legado incompatível são re
     assert.throws(() => validate('alerts',[...alerts(),...alerts()]));
     assert.throws(() => validate('login',{perfil:'ADMINISTRADOR',acesso_liberado:true}));
     assert.throws(() => validate('login',session('ROOT')));
-    assert.throws(() => validate('dashboard',{balanco_massas_kg:{total_material_entrada:450}}));
+    assert.equal(validate('dashboard',{balanco_massas_kg:{total_material_entrada:450}}).total_processado_kg,null);
 });
 test('manifest, tamanhos PNG e arquivos de precache existem', async () => {
     const manifest=JSON.parse(await readFile(new URL('../manifest.json',import.meta.url)));
@@ -103,7 +104,7 @@ test('ativação remove somente caches antigos da aplicação', async () => {
     const handlers={}, deleted=[]; let promise;
     vm.runInNewContext(await readFile(new URL('../sw.js',import.meta.url),'utf8'),{
         URL,self:{registration:{scope:'https://cyclo.test/'},clients:{claim:async()=>{}},addEventListener:(n,f)=>handlers[n]=f},
-        caches:{keys:async()=>['ecocycle-static-v3','ecocycle-static-v4','other-app'],delete:async n=>deleted.push(n)}
+        caches:{keys:async()=>['ecocycle-static-v3','ecocycle-static-v5','other-app'],delete:async n=>deleted.push(n)}
     });
     handlers.activate({waitUntil:p=>promise=p}); await promise; assert.deepEqual(deleted,['ecocycle-static-v3']);
 });

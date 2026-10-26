@@ -1,0 +1,42 @@
+/** @file Regressões da integração publicada: JWT, endpoint real e configuração do artefato. */
+import { test, afterEach } from 'node:test';
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { request } from '../js/api.js';
+import { adaptLogin } from '../js/adapters.js';
+import { tokenResponse } from './fixtures.mjs';
+import { CONFIG } from '../js/config.js';
+const originalFetch = globalThis.fetch;
+afterEach(() => { globalThis.fetch = originalFetch; });
+
+test('TokenResponse exige Bearer, acesso liberado e expiração; nunca inventa sessão', () => {
+    const response = tokenResponse();
+    assert.equal(adaptLogin(response, 'operador').nome, 'operador');
+    for (const patch of [{access_token:'inválido'}, {token_type:'Basic'}, {acesso_liberado:false},
+        {access_token:'header.e30.signature'}]) assert.throws(() => adaptLogin({...response,...patch}, 'operador'));
+});
+test('dashboard usa endpoint publicado e preserva ausência de estoque e telemetria', async () => {
+    globalThis.fetch = async (url, options) => {
+        assert.equal(url, `${CONFIG.API_URL}/api/producao/dashboard-diario`);
+        assert.equal(options.method, 'GET');
+        assert.equal(options.headers.Authorization, 'Bearer teste');
+        return Response.json({balanco_massas_kg:{total_material_entrada:1250}});
+    };
+    const result = await request('dashboard', {token:'teste'});
+    assert.equal(result.total_processado_kg,null);
+    assert.equal(result.estoque.plastico_kg,null);
+    assert.equal(result.esteira,null);
+    assert.deepEqual(result.producao_diaria,[]);
+});
+test('resposta de login incompatível produz erro de contrato, não falha de conexão', async () => {
+    globalThis.fetch = async () => Response.json({acesso_liberado:true});
+    await assert.rejects(request('login',{body:{login:'teste',senha:'teste'}}), /formato inválido/);
+});
+test('CSP permite API oficial e botão possui destino externo mesmo sem JavaScript', async () => {
+    const config = JSON.parse(await readFile(new URL('../vercel.json',import.meta.url)));
+    const csp = config.headers[0].headers.find(header=>header.key==='Content-Security-Policy').value;
+    assert.ok(csp.includes(`connect-src 'self' ${CONFIG.API_URL};`));
+    const html = await readFile(new URL('../login.html',import.meta.url),'utf8');
+    assert.ok(html.includes(`id="voltarSistemaWeb" href="${CONFIG.WEB_URL}"`));
+    assert.equal(config.outputDirectory,'dist');
+});

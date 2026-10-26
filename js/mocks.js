@@ -1,13 +1,28 @@
+/** @file Mantém cenários demonstrativos legados; a API permite usá-los apenas quando habilitados em loopback. */
 let scenario = 'normal';
 
+/**
+ * Seleciona um cenário somente para demonstração local explicitamente habilitada.
+ * @param {string} value - Nome do cenário.
+ * @returns {void}
+ */
 export function setScenario(value) {
     scenario = value;
 }
 
+/**
+ * Consulta o cenário local selecionado.
+ * @returns {string} Nome do cenário demonstrativo.
+ */
 export function getScenario() {
     return scenario;
 }
 
+/**
+ * Produz medições sintéticas exclusivamente para demonstração local; não representa a API de produção.
+ * @param {string} [mode] - Cenário de leitura, estado e conexão.
+ * @returns {object} Dashboard sintético.
+ */
 export function makeDashboard(mode = scenario) {
     const now = Date.now();
 
@@ -62,6 +77,13 @@ export function makeDashboard(mode = scenario) {
     };
 }
 
+/**
+ * Simula latência e falhas locais com suporte a cancelamento, sem executar HTTP.
+ * @param {string} kind - Operação demonstrativa.
+ * @param {object} [options] - body, active e signal usados pelo cenário.
+ * @returns {Promise<object>} Status e dados sintéticos.
+ * @throws {DOMException} Quando cancelado.
+ */
 export async function mockRequest(
     kind,
     { body, active, signal } = {}

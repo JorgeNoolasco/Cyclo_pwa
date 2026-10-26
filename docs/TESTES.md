@@ -1,3 +1,5 @@
+﻿> Registro histórico de 25/10/2026. Para configuração, contratos e resultados atuais, consulte [INTEGRACAO_ATUAL.md](INTEGRACAO_ATUAL.md) e [ENTREGA_VERCEL.md](ENTREGA_VERCEL.md). Afirmações sobre ausência de JWT, rotas ou URLs abaixo descrevem a auditoria antiga.
+
 # Testes — 25/10/2026
 
 Ambiente: Windows, Node.js v24.22.0, Python 3.13, Playwright existente e Microsoft Edge headless. A data do relatório usa America/Sao_Paulo.
@@ -88,3 +90,4 @@ O navegador cria seus próprios servidores; não precisa que a API ou o servidor
 5. Instalação e abertura standalone em Android, iPhone/iPad e desktop físico; fallback Safari; atualização do SW após publicação de nova versão.
 
 Nenhuma dessas pendências é considerada aprovada pelos testes de fixture.
+
