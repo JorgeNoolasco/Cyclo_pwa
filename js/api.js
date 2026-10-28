@@ -109,9 +109,7 @@ export async function request(
     { token, body, active = true, signal } = {}
 ) {
     const demonstration = CONFIG.USE_MOCK && ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
-    if (token === 'local-demo') {
-        throw new ApiError('Acesso local aberto. Dados operacionais exigem uma sessão autenticada pela API.', 401);
-    }
+    const localDemoSession = token === 'local-demo';
     if (kind === 'dashboard' && !demonstration) {
         if (!token) throw new ApiError(messages[401], 401);
         if (body) throw new ApiError('Operação não permitida.');
@@ -137,7 +135,7 @@ export async function request(
     if (kind !== 'login' && !token) throw new ApiError(messages[401], 401);
     if (kind !== 'login' && body) throw new ApiError('Operação não permitida.');
 
-    if (demonstration) {
+    if (demonstration || localDemoSession) {
         const { mockRequest } = await import('./mocks.js');
         const mockKind = ['production', 'equipment'].includes(kind) ? 'dashboard' : kind;
         const response = await mockRequest(mockKind, {

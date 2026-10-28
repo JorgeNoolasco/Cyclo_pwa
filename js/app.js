@@ -71,10 +71,10 @@ export async function navigate(name, replace = false) {
         if (greeting) greeting.textContent = getSession()?.nome?.split(' ')[0] || 'usuário';
         history[replace ? 'replaceState' : 'pushState']({}, '', `${name}.html`);
         dispose = mounts[name]({ navigate, reason }) || (() => { });
-        if (CONFIG.USE_MOCK && ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)) {
+        if (getSession()?.token === 'local-demo' || (CONFIG.USE_MOCK && ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname))) {
             const notice = document.createElement('p');
             notice.className = 'aviso-conexao is-visivel'; notice.setAttribute('role', 'status');
-            notice.textContent = 'Demonstração local: dados fictícios, sem integração operacional.';
+            notice.textContent = 'Modo demonstração: dados fictícios, sem integração operacional.';
             document.querySelector('main')?.prepend(notice);
         }
         reason = '';
