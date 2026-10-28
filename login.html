@@ -38,6 +38,7 @@
           </div>
           <h1 id="loginTitulo">Acesse sua conta</h1>
           <p>Monitore a operação da EcoCycle<br class="desktop-break"> em qualquer lugar.</p>
+          <p class="login__mensagem">Acesso local aberto para demonstração. Usuário sugerido: <strong>ecocycle</strong> · senha: <strong>cyclo2026</strong>. Você também pode digitar qualquer usuário e senha.</p>
         </div>
 
         <form class="login__formulario" id="formLogin">
@@ -48,6 +49,7 @@
                 id="nome"
                 type="text"
                 name="login"
+                value="ecocycle"
                 placeholder="Nome de usuário"
                 autocomplete="username"
                 required
@@ -57,7 +59,7 @@
           <label class="login__campo">
             <span class="sr-only">Senha</span>
             <i data-lucide="lock-keyhole" aria-hidden="true"></i>
-            <input id="senha" type="password" name="senha" placeholder="Senha" autocomplete="current-password" required>
+            <input id="senha" type="password" name="senha" value="cyclo2026" placeholder="Senha" autocomplete="current-password" required>
             <button class="login__mostrar-senha" id="mostrarSenha" type="button" aria-label="Mostrar senha" aria-pressed="false">
               <i data-lucide="eye" aria-hidden="true"></i>
             </button>

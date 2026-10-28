@@ -1,6 +1,6 @@
 /** @file Gerencia sessão volátil, expiração e descarte de respostas antigas; autorização efetiva pertence à API. */
 
-import { request } from './api.js';
+// Local demo login; it does not depend on or send data to the backend.
 
 // Guarda os dados da sessão atual.
 let session = null;
@@ -31,14 +31,16 @@ export function getSession() {
  */
 export async function login(nome, senha, signal) {
     const current = ++generation;
-
-    const next = await request('login', {
-        signal,
-        body: {
-            login: nome,
-            senha: senha
-        }
-    });
+    if (signal?.aborted) return false;
+    if (nome !== 'ecocycle' || senha !== 'cyclo2026') {
+        throw new Error('Usuário ou senha inválidos.');
+    }
+    const next = {
+        token: 'local-demo',
+        nome: nome || 'visitante',
+        perfil: 'VISITANTE',
+        expira_em: new Date(Date.now() + 8 * 60 * 60 * 1000).toISOString()
+    };
 
     // Impede que uma tentativa antiga substitua a mais recente.
     if (current !== generation) {

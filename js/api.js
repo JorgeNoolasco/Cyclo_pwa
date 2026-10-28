@@ -109,6 +109,9 @@ export async function request(
     { token, body, active = true, signal } = {}
 ) {
     const demonstration = CONFIG.USE_MOCK && ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
+    if (token === 'local-demo') {
+        throw new ApiError('Acesso local aberto. Dados operacionais exigem uma sessão autenticada pela API.', 401);
+    }
     if (kind === 'dashboard' && !demonstration) {
         if (!token) throw new ApiError(messages[401], 401);
         if (body) throw new ApiError('Operação não permitida.');

@@ -29,11 +29,10 @@ export function mount({ navigate, reason }) {
         button.disabled = true; message.textContent = 'Entrando…';
         const secret = password.value; password.value = '';
         try {
-            if (!navigator.onLine) throw new Error('Sem conexão. Conecte-se para entrar.');
             const success = await login(document.getElementById('nome').value.trim(), secret, controller.signal);
             if (!disposed && success) { completed = true; void navigate('dashboard', true); }
         } catch (error) {
-            if (!disposed) message.textContent = error instanceof ApiError || error.message.startsWith('Sem conexão') || error.message.startsWith('A sessão') ? error.message : 'Não foi possível entrar. Tente novamente.';
+            if (!disposed) message.textContent = error instanceof ApiError || error.message.startsWith('Sem conexão') || error.message.startsWith('A sessão') || error.message.startsWith('Usuário ou senha') ? error.message : 'Não foi possível entrar. Tente novamente.';
         } finally { if (!disposed) button.disabled = false; }
     });
     document.getElementById('linkEsqueci').addEventListener('click', event => {
